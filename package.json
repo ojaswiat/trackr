@@ -1,0 +1,32 @@
+{
+    "name": "trackr",
+    "type": "module",
+    "private": true,
+    "packageManager": "pnpm@10.26.1",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "lint": "eslint .",
+        "typecheck": "nuxt typecheck",
+        "clean": "rm -rf .nuxt && rm -rf .output && rm -rf .data",
+        "clean:all": "pnpm clean && rm -rf node_modules && rm pnpm-lock.yaml",
+        "reset": "pnpm clean && pnpm prepare",
+        "reset:all": "pnpm clean:all && pnpm install"
+    },
+    "dependencies": {
+        "@iconify-json/lucide": "^1.2.82",
+        "@iconify-json/simple-icons": "^1.2.63",
+        "@nuxt/ui": "^4.3.0",
+        "nuxt": "^4.2.2"
+    },
+    "devDependencies": {
+        "@antfu/eslint-config": "^6.7.3",
+        "@nuxt/eslint": "^1.12.1",
+        "eslint": "^9.39.2",
+        "eslint-plugin-format": "^1.1.0",
+        "typescript": "^5.9.3",
+        "vue-tsc": "^3.2.1"
+    }
+}
