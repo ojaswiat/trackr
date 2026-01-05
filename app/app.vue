@@ -4,7 +4,7 @@
             class="bg-default w-full flex flex-col min-h-screen relative">
             <NuxtLoadingIndicator />
             <NuxtLayout>
-                <!-- <UColorModeButton /> -->
+                <UColorModeButton />
                 <NuxtPage />
             </NuxtLayout>
         </div>

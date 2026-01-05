@@ -1,4 +1,5 @@
-1. Create the app with mock data.
-2. Create the app header and footers.
-3. Create login functionality.
-4. Create tables - add functions, triggers, and RLS.
+- Create the app with mock data.
+- Create the app header and footers.
+- Create login functionality.
+- Create tables - add functions, triggers, and RLS.
+- Add pagination to all the APIs.

@@ -1,5 +1,3 @@
 <template>
-    <div>
-        Create the app here
-    </div>
+    <AccountsWrapper />
 </template>
