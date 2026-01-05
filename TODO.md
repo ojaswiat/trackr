@@ -3,3 +3,6 @@
 - Create login functionality.
 - Create tables - add functions, triggers, and RLS.
 - Add pagination to all the APIs.
+- Add colors, themeing, etc.
+- Make the UI responsive
+- Add page titles using layout pageMeta

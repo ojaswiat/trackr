@@ -17,7 +17,7 @@
 <script setup lang="ts">
 const props = defineProps({
     account: {
-        type: Object as PropType<TAccountCard>,
+        type: Object as PropType<TAccount>,
         required: true,
     },
 });

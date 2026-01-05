@@ -27,8 +27,8 @@ useHead({
     },
 });
 
-const title = "Nuxt Starter Template";
-const description = "A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.";
+const title = "TrackR";
+const description = "Your app for tracking expenses and managing your finances";
 
 useSeoMeta({
     title,

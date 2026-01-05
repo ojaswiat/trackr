@@ -1,26 +1,17 @@
-import reduce from "lodash/reduce";
+// Fetch all expenses categories only
+
+import { filter } from "lodash-es";
+import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/api";
 import categoriesData from "../../../data/category.json";
-import { CATEGORY_TYPE } from "../../../shared/constants/enums";
+import { CATEGORY_TYPE, SERVER_STATUS_CODES } from "../../../shared/constants/enums";
 
 export default defineEventHandler(() => {
-    // Todo: Aggreate query on DB for total values
-    const totalAmount = reduce(categoriesData.categories, (sum, category) => {
-        // Skip income
-        if (category.type === CATEGORY_TYPE.INCOME) {
-            return 0;
-        }
+    const categories = filter(categoriesData.categories, (category) => category.type === CATEGORY_TYPE.EXPENSE);
 
-        // Only sum expenses
-        sum += category.total_ammount;
-        return sum;
-    }, 0);
-
-    const allCategory = {
-        description: "Your total expenses accross all the categories",
-        id: "acc_000",
-        name: "All Categories",
-        total_amount: totalAmount,
+    return {
+        statusCode: SERVER_STATUS_CODES.OK,
+        statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.OK],
+        message: "Categories fetched successfully",
+        data: categories,
     };
-
-    return [allCategory, ...categoriesData.categories];
 });

@@ -1,6 +1,6 @@
-import type { TCategoryType, TTransactionType } from "../../shared/constants/enums";
+import type { TCategoryType, TTransactionType } from "../constants/enums";
 
-export type TAccountCard = {
+export type TAccount = {
     id: string;
     name: string;
     description: string;
@@ -8,13 +8,13 @@ export type TAccountCard = {
     total_expense: number;
 };
 
-export type TAccountList = TAccountCard[];
+export type TAccountList = TAccount[];
 
 export type TCategory = {
     id: string;
     label: string;
     description: string;
-    total_ammount: number;
+    total_ammount?: number;
     color: string;
     type: TCategoryType;
 };
