@@ -1,3 +1,6 @@
 <template>
-    <slot></slot>
+    <main class="flex flex-col w-screen h-screen">
+        <UColorModeButton />
+        <slot></slot>
+    </main>
 </template>

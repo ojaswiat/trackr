@@ -1,30 +1,5 @@
 <template>
-    <div class="flex flex-wrap items-start gap-8">
-        <AccountList
-            :accounts="accounts"
-            @select-account="onAccountSelect"
-        />
-
-        <div class="flex flex-col gap-8">
-            <CategoryExpenses :selected-account="selectedAccount" />
-            <AccountSummary :accounts="accounts" />
-        </div>
-
-        <TransactionsRecent :selected-account="selectedAccount" />
-    </div>
+    <p class="text-2xl font-bold text-primary text-center">
+        Your landing page here
+    </p>
 </template>
-
-<script setup lang="ts">
-import { find } from "lodash-es";
-
-const { data: response } = await useAsyncData("accounts", () => $fetch(ACCOUNTS_FETCH));
-const accounts = computed<TAccount[]>(() => {
-    return response.value?.data.accounts ?? [];
-});
-
-const selectedAccount = ref<TAccount>(accounts.value[0]!);
-
-function onAccountSelect(accountId: string) {
-    selectedAccount.value = find(accounts.value, (account) => account.id === accountId) ?? accounts.value[0]!;
-}
-</script>

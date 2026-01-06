@@ -1,13 +1,9 @@
 <template>
     <UApp>
-        <div
-            class="bg-default w-full flex flex-col min-h-screen relative">
-            <NuxtLoadingIndicator />
-            <NuxtLayout>
-                <UColorModeButton />
-                <NuxtPage />
-            </NuxtLayout>
-        </div>
+        <NuxtLoadingIndicator />
+        <NuxtLayout>
+            <NuxtPage />
+        </NuxtLayout>
     </UApp>
     <Analytics />
 </template>

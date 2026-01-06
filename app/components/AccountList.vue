@@ -1,18 +1,26 @@
 <template>
-    <UCard>
+    <UCard
+        :ui="{
+            body: 'p-0 sm:p-0 h-[72%] overflow-y-scroll',
+        }">
         <template #header>
             <div>
                 <h5 class="text-xl text-primary font-bold">
                     All Accounts
                 </h5>
                 <p>Click on an account to view its details</p>
+                <p class="text-muted text-sm">
+                    Scroll to view more
+                </p>
             </div>
         </template>
-        <div class="flex flex-col gap-4 items-center w-fit">
+        <div
+            class="flex flex-col gap-4 items-center w-fit p-4">
             <AccountCard
                 v-for="account in props.accounts"
                 :key="`account-card-${account.id}`"
                 :account="account"
+                class="flex-shrink-0 w-xs"
                 @select-account="onAccountSelect"
             />
         </div>

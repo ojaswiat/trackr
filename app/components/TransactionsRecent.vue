@@ -1,5 +1,8 @@
 <template>
-    <UCard>
+    <UCard
+        :ui="{
+            body: 'p-0 sm:p-0',
+        }">
         <template #header>
             <h5 class="text-xl text-primary font-bold">
                 Recent Transactions
@@ -8,9 +11,12 @@
                 {{ props.selectedAccount.name }}
             </p>
         </template>
-        <div class="flex flex-col gap-4 items-center w-fit">
-            <TransactionList
-                :transactions="transactions"
+        <div class="flex flex-col gap-4 items-center w-fit p-4">
+            <TransactionCard
+                v-for="transaction in transactions"
+                :key="`transaction-list-${transaction.id}`"
+                :transaction="transaction"
+                class="flex-shrink-0"
             />
         </div>
     </UCard>

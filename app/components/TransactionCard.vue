@@ -1,13 +1,13 @@
 <template>
     <UCard class="w-xs">
-        <template #header>
+        <div class="flex flex-col">
             <div
-                class="flex items-center gap-2 font-semibold"
+                class="flex items-center gap-2"
                 :class="{
                     'text-red-500': transaction.type === TRANSACTION_TYPE.EXPENSE,
                     'text-primary': transaction.type === TRANSACTION_TYPE.INCOME,
                 }">
-                <p>
+                <p class="font-semibold">
                     {{ props.transaction.amount }}
                 </p>
                 <Icon
@@ -17,21 +17,26 @@
                     class="h-4 w-4"
                 />
             </div>
-        </template>
-        <div class="flex flex-col gap-2">
-            <div class="flex gap-2 items-center">
-                <div
-                    class="h-4 w-4 rounded-sm"
-                    :style="{ backgroundColor: `${transaction.category_color}` }">
-                </div>
-                <p>{{ transaction.category_name }}</p>
-            </div>
 
-            <p
-                v-if="transaction.description"
-                class="text-sm">
-                {{ transaction.description }}
+            <p class="ml-auto w-full text-sm text-muted">
+                {{ formatDate(transaction.created_at) }}
             </p>
+
+            <div class="flex flex-col mt-4">
+                <div class="flex gap-2 items-center">
+                    <div
+                        class="h-4 w-4 rounded-sm"
+                        :style="{ backgroundColor: `${transaction.category_color}` }">
+                    </div>
+                    <p>{{ transaction.category_name }}</p>
+                </div>
+
+                <p
+                    v-if="transaction.description"
+                    class="text-sm">
+                    {{ transaction.description }}
+                </p>
+            </div>
         </div>
     </UCard>
 </template>
