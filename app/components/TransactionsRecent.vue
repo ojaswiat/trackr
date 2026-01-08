@@ -1,7 +1,8 @@
 <template>
     <UCard
+        class="h-[90%] flex flex-col"
         :ui="{
-            body: 'p-0 sm:p-0',
+            body: 'p-0 sm:p-0 flex-1 flex flex-col overflow-hidden',
         }">
         <template #header>
             <h5 class="text-xl text-primary font-bold">
@@ -11,7 +12,7 @@
                 Showing transactions for {{ props.selectedAccount.name }}
             </p>
         </template>
-        <div class="flex flex-col gap-4 items-center w-fit p-4">
+        <div class="flex flex-col gap-4 items-center w-fit p-4 overflow-y-auto flex-1">
             <UTable
                 :columns="columns"
                 :column-visibility="columnVisibility"
