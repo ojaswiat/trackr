@@ -1,15 +1,17 @@
 <template>
     <UForm
-        :state="state"
-        @submit="onSubmit">
+        :state="values"
+        @submit.prevent="onSubmit">
         <div class="flex flex-col gap-4">
             <div class="flex flex-wrap gap-4 justify-between items-center">
                 <UFormField
                     label="Type"
                     name="type"
+                    :error="errors.type"
                     required>
                     <URadioGroup
-                        :items="typeOptions"
+                        v-model="typeField"
+                        :items="transactionTypeOptions"
                         orientation="horizontal"
                     />
                 </UFormField>
@@ -17,10 +19,11 @@
                 <UFormField
                     label="Date"
                     name="date"
+                    :error="errors.date"
                     required>
                     <UInputDate
                         ref="inputDate"
-                        v-model="modelValue">
+                        v-model="dateProxy">
                         <template #trailing>
                             <UPopover :reference="inputDate?.inputsRef[3]?.$el">
                                 <UButton
@@ -34,7 +37,7 @@
 
                                 <template #content>
                                     <UCalendar
-                                        v-model="modelValue"
+                                        v-model="dateProxy"
                                         class="p-2"
                                         :max-value="today(getLocalTimeZone())"
                                     />
@@ -48,8 +51,10 @@
             <UFormField
                 label="Account"
                 name="account"
+                :error="errors.account"
                 required>
                 <USelect
+                    v-model="accountField"
                     class="w-full"
                     :items="accountOptions"
                     option-attribute="label"
@@ -61,8 +66,10 @@
             <UFormField
                 label="Category"
                 name="category"
+                :error="errors.category"
                 required>
                 <USelect
+                    v-model="categoryField"
                     class="w-full"
                     :items="categoryOptions"
                     option-attribute="label"
@@ -74,8 +81,10 @@
             <UFormField
                 label="Amount"
                 name="amount"
+                :error="errors.amount"
                 required>
                 <UInput
+                    v-model="amountField"
                     class="w-full"
                     type="number"
                     step="0.01"
@@ -86,8 +95,10 @@
 
             <UFormField
                 label="Note"
-                name="note">
+                name="note"
+                :error="errors.note">
                 <UTextarea
+                    v-model="noteField"
                     class="w-full"
                     :rows="3"
                     placeholder="Optional note about this transaction"
@@ -101,7 +112,7 @@
                 type="button"
                 color="neutral"
                 variant="ghost"
-                @click="handleReset">
+                @click="resetForm()">
                 Reset
             </UButton>
             <UButton
@@ -114,9 +125,11 @@
 </template>
 
 <script setup lang="ts">
-import { getLocalTimeZone, today } from "@internationalized/date";
+import type { DateValue } from "@internationalized/date";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { toTypedSchema } from "@vee-validate/zod";
-import { useForm } from "vee-validate";
+import { map } from "lodash-es";
+import { useField, useForm } from "vee-validate";
 import { z } from "zod";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
@@ -132,6 +145,11 @@ const props = defineProps({
 });
 
 const schema = z.object({
+    type: z
+        .number()
+        .refine((val) => val === 0 || val === 1, {
+            message: "Type is required",
+        }),
     date: z
         .string()
         .min(1, { message: "Date is required" })
@@ -142,11 +160,6 @@ const schema = z.object({
             const date = new Date(val);
             return !Number.isNaN(date.getTime());
         }, { message: "Date must be a valid date" }),
-    type: z
-        .number()
-        .refine((val) => val === 0 || val === 1, {
-            message: "Type is required",
-        }),
     category: z
         .string()
         .min(1, { message: "Category is required" }),
@@ -171,58 +184,78 @@ const schema = z.object({
 });
 
 const inputDate = useTemplateRef("inputDate");
-const modelValue = shallowRef(today(getLocalTimeZone()));
-
 const validationSchema = toTypedSchema(schema);
 
-const { values, errors, handleSubmit, resetForm, meta } = useForm({
+const { handleSubmit, values, errors, resetForm, isSubmitting: _isSubmitting } = useForm({
     validationSchema,
-    validateOnMount: false,
     initialValues: {
+        type: 1,
         date: "",
-        type: TRANSACTION_TYPE.EXPENSE,
         category: "",
         account: "",
-        amount: "",
+        amount: 0,
         note: "",
     },
 });
 
-const state = computed(() => ({
-    values,
-    errors,
-    meta,
-}));
+const { value: typeField } = useField<0 | 1>("type");
+const { value: dateField } = useField<string>("date");
+const { value: categoryField } = useField<string>("category");
+const { value: accountField } = useField<string>("account");
+const { value: amountField } = useField<number>("amount");
+const { value: noteField } = useField<string>("note");
 
-const typeOptions = [
+const dateProxy = computed({
+    get: () => {
+        if (!dateField.value) {
+            return undefined;
+        }
+        try {
+            return parseDate(dateField.value);
+        } catch {
+            return undefined;
+        }
+    },
+    set: (value: DateValue | undefined) => {
+        if (!value) {
+            dateField.value = "";
+            return;
+        }
+        dateField.value = value.toString();
+    },
+});
+
+const transactionTypeOptions = ref([
     { label: "Income", value: TRANSACTION_TYPE.INCOME },
     { label: "Expense", value: TRANSACTION_TYPE.EXPENSE },
-];
+]);
 
 const accountOptions = computed(() => {
-    return props.accounts.map((account) => ({
-        label: account.name,
-        value: account.id,
-    }));
+    return map(props.accounts, (account) => {
+        return {
+            label: account.name,
+            value: account.id,
+        };
+    });
 });
 
 const categoryOptions = computed(() => {
-    const selectedType = values.type;
-    return props.categories
-        .filter((category: TCategory) => category.type === selectedType)
-        .map((category: TCategory) => ({
+    return map(props.categories, (category) => {
+        return {
             label: category.name,
             value: category.id,
-        }));
+        };
+    });
 });
 
-const onSubmit = handleSubmit((formValues) => {
-    // TODO: Handle form submission
+const onSubmit = handleSubmit(() => {
+    console.info(typeField.value);
+    console.info(dateField.value);
+    console.info(categoryField.value);
+    console.info(accountField.value);
+    console.info(amountField.value);
+    console.info(noteField.value);
 
-    console.info("Form submitted:", formValues);
-});
-
-function handleReset() {
     resetForm();
-}
+});
 </script>
