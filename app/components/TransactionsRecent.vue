@@ -1,8 +1,7 @@
 <template>
     <UCard
-        class="h-[90%] flex flex-col"
         :ui="{
-            body: 'p-0 sm:p-0 flex-1 flex flex-col overflow-hidden',
+            body: 'p-0 sm:p-0 h-full',
         }">
         <template #header>
             <h5 class="text-xl text-primary font-bold">
@@ -12,17 +11,8 @@
                 Showing transactions for {{ props.selectedAccount.name }}
             </p>
         </template>
-        <div
-            v-if="pending"
-            class="flex flex-col gap-4 items-center w-fit p-4 overflow-y-auto flex-1">
-            <USkeleton class="h-12 w-full" />
-            <USkeleton class="h-12 w-full" />
-            <USkeleton class="h-12 w-full" />
-            <USkeleton class="h-12 w-full" />
-        </div>
-        <div
-            v-else
-            class="flex flex-col gap-4 items-center w-fit p-4 overflow-y-auto flex-1">
+
+        <div class="h-full pb-20 overflow-y-scroll">
             <UTable
                 :columns="columns"
                 :column-visibility="columnVisibility"
@@ -58,7 +48,7 @@ const categoriesMap = computed<Record<string, TCategory>>(() => {
     );
 });
 
-const { data: transactionsResponse, pending, refresh: _refetch } = await useAsyncData(
+const { data: transactionsResponse, refresh: _refetch } = await useAsyncData(
     () => `transactions-${props.selectedAccount.id}`, // Dynamic key for caching
     () => $fetch(TRANSACTIONS_FETCH, {
         method: "POST",

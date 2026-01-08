@@ -1,7 +1,7 @@
 <template>
     <UCard
         as="button"
-        class="flex flex-col w-sm"
+        class="w-sm"
         @click="emits('selectAccount', props.account.id)">
         <template #header>
             <p class="font-semibold text-primary text-left">

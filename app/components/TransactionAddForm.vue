@@ -116,14 +116,6 @@ const props = defineProps({
         type: Object as PropType<TCategoryList>,
         required: true,
     },
-    pendingAccounts: {
-        type: Boolean,
-        default: false,
-    },
-    pendingCategories: {
-        type: Boolean,
-        default: false,
-    },
 });
 
 const schema = z.object({

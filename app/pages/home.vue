@@ -1,83 +1,31 @@
 <template>
-    <div class="flex flex-wrap items-start gap-8 w-fit mx-auto flex-none h-full px-4">
-        <div class="flex flex-col gap-4 h-full">
-            <div
-                v-if="pendingAccounts"
-                class="flex-none h-[38%]">
-                <UCard>
-                    <template #header>
-                        <USkeleton class="h-6 w-48" />
-                        <USkeleton class="h-4 w-64 mt-2" />
-                    </template>
-                    <div class="flex flex-col gap-4 p-4">
-                        <USkeleton class="h-32 w-full" />
-                        <USkeleton class="h-32 w-full" />
-                    </div>
-                </UCard>
-            </div>
-            <AccountList
-                v-else
-                class="flex-none h-[38%]"
-                :accounts="accounts"
-                @select-account="onAccountSelect"
-            />
-            <TransactionAddForm
-                :accounts="accounts"
-                :categories="categories"
-                :pending-accounts="pendingAccounts"
-                :pending-categories="pendingCategories"
-            />
-        </div>
+    <div class="home px-4 h-[80vh]">
+        <AccountList
+            class="accounts-list"
+            :accounts="accounts"
+            @select-account="onAccountSelect"
+        />
 
-        <div class="flex flex-col gap-4 justify-between">
-            <div v-if="pendingAccounts || !selectedAccountRef">
-                <UCard>
-                    <template #header>
-                        <USkeleton class="h-6 w-48" />
-                        <USkeleton class="h-4 w-64 mt-2" />
-                    </template>
-                    <USkeleton class="h-[240px] w-full" />
-                </UCard>
-            </div>
-            <CategoryExpenses
-                v-else
-                :selected-account="selectedAccountRef"
-            />
-            <div v-if="pendingAccounts">
-                <UCard>
-                    <template #header>
-                        <USkeleton class="h-6 w-48" />
-                        <USkeleton class="h-4 w-64 mt-2" />
-                    </template>
-                    <USkeleton class="h-[300px] w-full" />
-                </UCard>
-            </div>
-            <AccountSummary
-                v-else
-                :accounts="accounts"
-            />
-        </div>
+        <CategoryExpenses
+            v-if="selectedAccount"
+            :selected-account="selectedAccount"
+        />
 
-        <div
-            v-if="pendingAccounts || !selectedAccountRef"
-            class="flex-none">
-            <UCard class="h-[90%]">
-                <template #header>
-                    <USkeleton class="h-6 w-48" />
-                    <USkeleton class="h-4 w-64 mt-2" />
-                </template>
-                <div class="flex flex-col gap-4 p-4">
-                    <USkeleton class="h-12 w-full" />
-                    <USkeleton class="h-12 w-full" />
-                    <USkeleton class="h-12 w-full" />
-                </div>
-            </UCard>
-        </div>
         <TransactionsRecent
-            v-else
-            class="flex-none"
-            :selected-account="selectedAccountRef"
+            v-if="selectedAccount"
+            class="recent-transactions-list"
+            :selected-account="selectedAccount"
             :categories="categories"
+        />
+
+        <!-- <TransactionAddForm
+            :accounts="accounts"
+            :categories="categories"
+        /> -->
+
+        <AccountSummary
+            v-if="selectedAccount"
+            :accounts="accounts"
         />
     </div>
 </template>
@@ -91,24 +39,40 @@ const accounts = computed<TAccountList>(() => {
     return (accountsResponse.value?.data.accounts ?? []) as TAccountList;
 });
 
-const { data: categoriesResponse, pending: pendingCategories } = await useFetch(CATEGORIES_FETCH);
+const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
 
 const categories = computed<TCategoryList>(() => {
     return (categoriesResponse.value?.data.categories ?? []) as TCategoryList;
 });
 
-const selectedAccountRef = ref<TAccount | null>(null);
+const selectedAccount = ref<TAccount | null>(null);
 
 watch([accounts, pendingAccounts], () => {
-    if (!pendingAccounts.value && accounts.value.length > 0 && !selectedAccountRef.value) {
-        selectedAccountRef.value = accounts.value[0] ?? null;
+    if (!pendingAccounts.value && accounts.value.length > 0 && !selectedAccount.value) {
+        selectedAccount.value = accounts.value[0] ?? null;
     }
 }, { immediate: true });
 
 function onAccountSelect(accountId: string) {
     const account = find(accounts.value, (account) => account.id === accountId);
     if (account) {
-        selectedAccountRef.value = account;
+        selectedAccount.value = account;
     }
 }
 </script>
+
+<style scoped>
+.home {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 1rem;
+
+    .accounts-list {
+        grid-row-start: span 2;
+    }
+
+    .recent-transactions-list {
+        grid-row-start: span 2;
+    }
+}
+</style>

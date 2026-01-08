@@ -1,7 +1,7 @@
 <template>
     <UCard
         :ui="{
-            body: 'p-0 sm:p-0 h-[72%] overflow-y-scroll',
+            body: 'p-0 pb-20 sm:p-0 sm:pb-20 h-full overflow-y-scroll',
         }">
         <template #header>
             <div>

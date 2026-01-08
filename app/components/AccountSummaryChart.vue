@@ -1,7 +1,7 @@
 <template>
     <BarChart
         :data="accountsData"
-        :height="300"
+        :height="240"
         :categories="amountTypeMultiple"
         :y-axis="['income', 'expense']"
         x-axis="name"
