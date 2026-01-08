@@ -1,107 +1,120 @@
 <template>
-    <UCard>
-        <template #header>
-            <h3 class="text-xl font-bold text-primary">
+    <UForm
+        :state="state"
+        @submit="onSubmit">
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-wrap gap-4 justify-between items-center">
+                <UFormField
+                    label="Type"
+                    name="type"
+                    required>
+                    <URadioGroup
+                        :items="typeOptions"
+                        orientation="horizontal"
+                    />
+                </UFormField>
+
+                <UFormField
+                    label="Date"
+                    name="date"
+                    required>
+                    <UInputDate
+                        ref="inputDate"
+                        v-model="modelValue">
+                        <template #trailing>
+                            <UPopover :reference="inputDate?.inputsRef[3]?.$el">
+                                <UButton
+                                    color="neutral"
+                                    variant="link"
+                                    size="sm"
+                                    icon="i-lucide-calendar"
+                                    aria-label="Select a date"
+                                    class="px-0"
+                                />
+
+                                <template #content>
+                                    <UCalendar
+                                        v-model="modelValue"
+                                        class="p-2"
+                                        :max-value="today(getLocalTimeZone())"
+                                    />
+                                </template>
+                            </UPopover>
+                        </template>
+                    </UInputDate>
+                </UFormField>
+            </div>
+
+            <UFormField
+                label="Account"
+                name="account"
+                required>
+                <USelect
+                    class="w-full"
+                    :items="accountOptions"
+                    option-attribute="label"
+                    value-attribute="value"
+                    placeholder="Select an account"
+                />
+            </UFormField>
+
+            <UFormField
+                label="Category"
+                name="category"
+                required>
+                <USelect
+                    class="w-full"
+                    :items="categoryOptions"
+                    option-attribute="label"
+                    value-attribute="value"
+                    placeholder="Select a category"
+                />
+            </UFormField>
+
+            <UFormField
+                label="Amount"
+                name="amount"
+                required>
+                <UInput
+                    class="w-full"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                />
+            </UFormField>
+
+            <UFormField
+                label="Note"
+                name="note">
+                <UTextarea
+                    class="w-full"
+                    :rows="3"
+                    placeholder="Optional note about this transaction"
+                    :maxlength="500"
+                />
+            </UFormField>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+            <UButton
+                type="button"
+                color="neutral"
+                variant="ghost"
+                @click="handleReset">
+                Reset
+            </UButton>
+            <UButton
+                type="submit"
+                color="primary">
                 Add Transaction
-            </h3>
-        </template>
-
-        <UForm
-            :state="state"
-            @submit="onSubmit">
-            <div class="flex flex-col gap-4">
-                <div class="flex flex-wrap gap-4 justify-between items-center">
-                    <UFormField
-                        label="Type"
-                        name="type"
-                        required>
-                        <URadioGroup
-                            :items="typeOptions"
-                            orientation="horizontal"
-                        />
-                    </UFormField>
-
-                    <UFormField
-                        label="Date"
-                        name="date"
-                        required>
-                        <UInput
-                            type="date"
-                            class="w-full"
-                        />
-                    </UFormField>
-                </div>
-
-                <UFormField
-                    label="Account"
-                    name="account"
-                    required>
-                    <USelect
-                        class="w-full"
-                        :items="accountOptions"
-                        option-attribute="label"
-                        value-attribute="value"
-                        placeholder="Select an account"
-                    />
-                </UFormField>
-
-                <UFormField
-                    label="Category"
-                    name="category"
-                    required>
-                    <USelect
-                        class="w-full"
-                        :items="categoryOptions"
-                        option-attribute="label"
-                        value-attribute="value"
-                        placeholder="Select a category"
-                    />
-                </UFormField>
-
-                <UFormField
-                    label="Amount"
-                    name="amount"
-                    required>
-                    <UInput
-                        class="w-full"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                    />
-                </UFormField>
-
-                <UFormField
-                    label="Note"
-                    name="note">
-                    <UTextarea
-                        class="w-full"
-                        :rows="3"
-                        placeholder="Optional note about this transaction"
-                        :maxlength="500"
-                    />
-                </UFormField>
-            </div>
-
-            <div class="flex justify-end gap-2 mt-4">
-                <UButton
-                    type="button"
-                    color="neutral"
-                    variant="ghost"
-                    @click="handleReset">
-                    Reset
-                </UButton>
-                <UButton
-                    type="submit"
-                    color="primary">
-                    Add Transaction
-                </UButton>
-            </div>
-        </UForm>
-    </UCard>
+            </UButton>
+        </div>
+    </UForm>
 </template>
 
 <script setup lang="ts">
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { z } from "zod";
@@ -156,6 +169,9 @@ const schema = z.object({
         .optional()
         .or(z.literal("")),
 });
+
+const inputDate = useTemplateRef("inputDate");
+const modelValue = shallowRef(today(getLocalTimeZone()));
 
 const validationSchema = toTypedSchema(schema);
 

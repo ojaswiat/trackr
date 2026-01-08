@@ -1,5 +1,5 @@
 <template>
-    <div class="home px-4 h-full">
+    <div class="home px-4 h-full relative">
         <AccountList
             class="accounts-list"
             :accounts="accounts"
@@ -18,15 +18,35 @@
             :categories="categories"
         />
 
-        <!-- <TransactionAddForm
-            :accounts="accounts"
-            :categories="categories"
-        /> -->
-
         <AccountSummary
             v-if="selectedAccount"
             :accounts="summaryAccounts"
         />
+
+        <UButton
+            class="absolute bottom-20 right-28 rounded-full p-4"
+            size="xl"
+            icon="i-lucide-file-plus-2"
+            @click="showAddTransactionModal = true"
+        />
+
+        <UModal
+            v-model:open="showAddTransactionModal"
+            class="absolute"
+            title="Add New Transaction"
+            :dismissible="false"
+            :close="{
+                color: 'primary',
+                variant: 'outline',
+                class: 'rounded-full',
+            }">
+            <template #body>
+                <TransactionAddForm
+                    :accounts="summaryAccounts"
+                    :categories="categories"
+                />
+            </template>
+        </UModal>
     </div>
 </template>
 
@@ -34,6 +54,10 @@
 import { find } from "lodash-es";
 
 const { data: accountsResponse, pending: pendingAccounts } = await useFetch(ACCOUNTS_FETCH);
+const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
+
+const selectedAccount = ref<TAccount | null>(null);
+const showAddTransactionModal = ref(false);
 
 const accounts = computed<TAccountList>(() => {
     return (accountsResponse.value?.data.accounts ?? []) as TAccountList;
@@ -44,19 +68,9 @@ const summaryAccounts = computed<TAccountList>(() => {
     ;
 });
 
-const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
-
 const categories = computed<TCategoryList>(() => {
     return (categoriesResponse.value?.data.categories ?? []) as TCategoryList;
 });
-
-const selectedAccount = ref<TAccount | null>(null);
-
-watch([accounts, pendingAccounts], () => {
-    if (!pendingAccounts.value && accounts.value.length > 0 && !selectedAccount.value) {
-        selectedAccount.value = accounts.value[0] ?? null;
-    }
-}, { immediate: true });
 
 function onAccountSelect(accountId: string) {
     const account = find(accounts.value, (account) => account.id === accountId);
@@ -64,6 +78,12 @@ function onAccountSelect(accountId: string) {
         selectedAccount.value = account;
     }
 }
+
+watch([accounts, pendingAccounts], () => {
+    if (!pendingAccounts.value && accounts.value.length > 0 && !selectedAccount.value) {
+        selectedAccount.value = accounts.value[0] ?? null;
+    }
+}, { immediate: true });
 </script>
 
 <style scoped>
