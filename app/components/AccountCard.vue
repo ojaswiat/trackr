@@ -33,7 +33,7 @@
         <template
             v-if="props.account.description"
             #footer>
-            <p class="text-left text-wrap">
+            <p class="text-left text-sm text-wrap">
                 {{ props.account.description }}
             </p>
         </template>

@@ -8,9 +8,8 @@
                 <h5 class="text-xl text-primary font-bold">
                     All Accounts
                 </h5>
-                <p>Click on an account to view its details</p>
                 <p class="text-muted text-sm">
-                    Scroll to view more
+                    Click on an account to view its details. Scroll to view more
                 </p>
             </div>
         </template>
@@ -20,7 +19,7 @@
                 v-for="account in props.accounts"
                 :key="`account-card-${account.id}`"
                 :account="account"
-                class="flex-shrink-0 w-xs"
+                class="flex-shrink-0"
                 @select-account="onAccountSelect"
             />
         </div>

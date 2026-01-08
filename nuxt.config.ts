@@ -11,11 +11,13 @@ export default defineNuxtConfig({
         "@nuxt/eslint",
         "@nuxt/ui",
         "nuxt-charts",
+        "@pinia/nuxt",
     ],
 
     imports: {
         dirs: [
             "constants",
+            "stores",
             "types",
         ],
     },

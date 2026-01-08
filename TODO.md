@@ -2,6 +2,7 @@
 - Create the app header and footers.
 - Create login functionality.
 - Create tables - add functions, triggers, and RLS.
+- Add all accounts - the DB, APIs, and pagination will handle scaling issues.
 - Add pagination to all the APIs.
 - All accounts are not possible for a DB.
 - Implement CRUD and refresh for applicable entities.

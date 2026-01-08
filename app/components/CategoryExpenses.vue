@@ -7,7 +7,7 @@
                 </h5>
                 <p
                     v-if="selectedAccount?.description"
-                    class="text-wrap">
+                    class="text-wrap text-sm text-muted">
                     {{ selectedAccount.description }}
                 </p>
             </div>

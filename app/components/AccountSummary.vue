@@ -4,7 +4,7 @@
             <h5 class="text-xl font-bold text-primary w-xl">
                 Accounts Summary
             </h5>
-            <p>
+            <p class="text-sm text-muted">
                 A chart of income and expenses of all your accounts
             </p>
         </template>
