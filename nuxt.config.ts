@@ -12,6 +12,7 @@ export default defineNuxtConfig({
         "@nuxt/ui",
         "nuxt-charts",
         "@pinia/nuxt",
+        "@nuxtjs/supabase",
     ],
 
     imports: {
@@ -30,6 +31,14 @@ export default defineNuxtConfig({
                 commaDangle: "never",
                 braceStyle: "1tbs",
             },
+        },
+    },
+
+    supabase: {
+        redirectOptions: {
+            login: "/signin",
+            callback: "/confirm",
+            exclude: ["/", "/about"], // Add public pages here
         },
     },
 });

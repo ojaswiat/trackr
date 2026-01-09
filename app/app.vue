@@ -27,7 +27,6 @@ const title = "TrackR";
 const description = "Your app for tracking expenses and managing your finances";
 
 useSeoMeta({
-    title,
     description,
     ogTitle: title,
     ogDescription: description,

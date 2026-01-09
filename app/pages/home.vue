@@ -56,6 +56,10 @@ import { find } from "lodash-es";
 const { data: accountsResponse, pending: pendingAccounts } = await useFetch(ACCOUNTS_FETCH);
 const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
 
+useHead({
+    title: "Home",
+});
+
 const selectedAccount = ref<TAccount | null>(null);
 const showAddTransactionModal = ref(false);
 
