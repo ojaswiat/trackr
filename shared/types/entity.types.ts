@@ -4,8 +4,7 @@ export type TAccount = {
     id: string;
     name: string;
     description: string;
-    total_income: number;
-    total_expense: number;
+    color: string;
 };
 
 export type TAccountList = TAccount[];
@@ -14,7 +13,6 @@ export type TCategory = {
     id: string;
     name: string;
     description: string;
-    total_amount?: number;
     color: string;
     type: TCategoryType;
 };
