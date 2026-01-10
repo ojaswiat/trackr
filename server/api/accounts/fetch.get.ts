@@ -23,22 +23,15 @@ export default defineEventHandler((event) => {
     }
 
     // If no account_id is provided, create a pseudo "all accounts" object
-    const allAccountsSummary = allAccounts.reduce(
-        (acc, current) => ({
-            id: "acc_000",
-            name: "All Accounts",
-            description: "Combined view of all accounts",
-            total_income: acc.total_income + current.total_income,
-            total_expense: acc.total_expense + current.total_expense,
-        }),
-        {
-            id: "acc_000",
-            name: "All Accounts",
-            description: "Combined view of all accounts",
-            total_income: 0,
-            total_expense: 0,
-        } as TAccount,
-    );
+    const allAccountsSummary: TAccount = {
+        // TODO: get this from data base
+        id: "acc_000",
+        name: "All Accounts",
+        description: "Combined view of all accounts",
+        color: "#000000",
+        total_income: allAccounts.reduce((acc, curr) => acc + (curr.total_income ?? 0), 0), // TODO: get this from group by query on transaction from DB
+        total_expense: allAccounts.reduce((acc, curr) => acc + (curr.total_expense ?? 0), 0), // TODO: get this from group by query on transaction from DB
+    };
 
     // Return the pseudo "all accounts" object followed by individual accounts
     return {

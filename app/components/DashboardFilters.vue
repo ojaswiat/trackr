@@ -63,7 +63,7 @@ const df = new DateFormatter("en-UK", {
     dateStyle: "medium",
 });
 
-const selectedAccount = defineModel<string>("account");
+const selectedAccount = defineModel<string>("selectedAccount");
 
 // TODO: Emit events to catch this date range on change
 const calendarRange = shallowRef({

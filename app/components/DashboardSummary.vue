@@ -1,63 +1,69 @@
 <template>
     <div class="w-full flex flex-wrap items-center gap-4 justify-between">
-        <UCard class="w-60 flex flex-col gap-2 bg-gradient-to-br from-primary-50 to-primary-400">
-            <div class="flex items-center justify-between">
-                <p>
-                    Total Income
-                </p>
-                <div class="h-8 w-8 rounded-full bg-primary-100 text-primary-500 flex items-center justify-center">
-                    <UIcon
-                        name="i-lucide:trending-up"
-                        class="size-4"
-                    />
+        <UCard class="w-60 bg-gradient-to-br from-primary-50 to-primary-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <p>
+                        Total Income
+                    </p>
+                    <div class="h-8 w-8 rounded-full bg-primary-100 text-primary-500 flex items-center justify-center">
+                        <UIcon
+                            name="i-lucide:trending-up"
+                            class="size-4"
+                        />
+                    </div>
                 </div>
+                <p class="text-2xl font-bold">
+                    {{ currency }} {{ props.summary.total_income }}
+                </p>
+                <p class="text-sm">
+                    {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
+                </p>
             </div>
-            <p class="text-2xl font-bold">
-                {{ currency }} {{ props.summary.total_income }}
-            </p>
-            <p class="text-sm">
-                {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
-            </p>
         </UCard>
 
-        <UCard class="w-60 flex flex-col gap-2 bg-gradient-to-br from-error-50 to-error-400">
-            <div class="flex items-center justify-between">
-                <p>
-                    Total Expense
-                </p>
-                <div class="h-8 w-8 rounded-full bg-error-100 text-error-500 flex items-center justify-center">
-                    <UIcon
-                        name="i-lucide:trending-down"
-                        class="size-4"
-                    />
+        <UCard class="w-60 bg-gradient-to-br from-error-50 to-error-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <p>
+                        Total Expense
+                    </p>
+                    <div class="h-8 w-8 rounded-full bg-error-100 text-error-500 flex items-center justify-center">
+                        <UIcon
+                            name="i-lucide:trending-down"
+                            class="size-4"
+                        />
+                    </div>
                 </div>
+                <p class="text-2xl font-bold">
+                    {{ currency }} {{ props.summary.total_expense }}
+                </p>
+                <p class="text-sm">
+                    {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
+                </p>
             </div>
-            <p class="text-2xl font-bold">
-                {{ currency }} {{ props.summary.total_expense }}
-            </p>
-            <p class="text-sm">
-                {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
-            </p>
         </UCard>
 
-        <UCard class="w-60 flex flex-col gap-2 bg-gradient-to-br from-info-50 to-info-400">
-            <div class="flex items-center justify-between">
-                <p>
-                    Net Balance
-                </p>
-                <div class="h-8 w-8 rounded-full bg-info-100 text-info-500 flex items-center justify-center">
-                    <UIcon
-                        name="i-lucide:trending-up-down"
-                        class="size-4"
-                    />
+        <UCard class="w-60 bg-gradient-to-br from-info-50 to-info-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <p>
+                        Net Balance
+                    </p>
+                    <div class="h-8 w-8 rounded-full bg-info-100 text-info-500 flex items-center justify-center">
+                        <UIcon
+                            name="i-lucide:trending-up-down"
+                            class="size-4"
+                        />
+                    </div>
                 </div>
+                <p class="text-2xl font-bold">
+                    {{ currency }} {{ props.summary.total_income - props.summary.total_expense }}
+                </p>
+                <p class="text-sm">
+                    {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
+                </p>
             </div>
-            <p class="text-2xl font-bold">
-                {{ currency }} {{ props.summary.total_income - props.summary.total_expense }}
-            </p>
-            <p class="text-sm">
-                {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
-            </p>
         </UCard>
     </div>
 </template>

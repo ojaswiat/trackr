@@ -1,9 +1,16 @@
 <template>
     <div class="w-full flex flex-col gap-8">
-        <DashboardFilters :accounts="accounts" />
+        <DashboardFilters
+            v-model:selected-account="selectedAccount"
+            :accounts="accounts"
+        />
         <DashboardSummary
             :summary="summary"
             :date-range="dateRange"
+        />
+        <DashboardAccounts
+            v-model:selected-account="selectedAccount"
+            :accounts="accounts"
         />
     </div>
 </template>
@@ -21,7 +28,12 @@ useHead({
 
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 
-const accounts = computed(() => accountsResponse.value?.data?.accounts || []);
+// TODO: default to all
+const selectedAccount = ref<string>("acc_000");
+
+const accounts = computed(() => {
+    return accountsResponse.value?.data?.accounts || [];
+});
 
 // TODO: remove mock data
 const summary = computed(() => ({

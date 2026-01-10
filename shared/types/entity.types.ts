@@ -3,8 +3,12 @@ import type { TCategoryType, TTransactionType } from "../constants/enums";
 export type TAccount = {
     id: string;
     name: string;
-    description: string;
-    color: string;
+    description?: string;
+    color?: string;
+
+    // TODO: get this from group by query on transaction from DB
+    total_income?: number;
+    total_expense?: number;
 };
 
 export type TAccountList = TAccount[];
