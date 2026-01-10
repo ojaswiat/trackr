@@ -32,15 +32,30 @@ const props = defineProps({
         type: Object as PropType<TAccount>,
         required: true,
     },
-    categories: {
-        type: Object as PropType<TCategory[]>,
-        required: true,
-    },
+});
+
+// const { data: categoryResponse } = await useAsyncData(
+//     () => `categories-${props.selectedAccount.id}`, // Dynamic key for caching
+//     () => $fetch(CATEGORIES_FETCH, {
+//         method: "GET",
+//         body: {
+//             filters: {
+//                 account_id: props.selectedAccount.id === "acc_000" ? [] : [props.selectedAccount.id],
+//             },
+//         },
+//     }),
+//     { watch: [() => props.selectedAccount.id] },
+// );
+
+const { data: categoryResponse } = await useFetch(CATEGORIES_FETCH);
+
+const categories = computed(() => {
+    return (categoryResponse.value?.data?.categories || []) as TCategory[];
 });
 
 const categoriesMap = computed<Record<string, TCategory>>(() => {
     return reduce(
-        props.categories,
+        categories.value,
         (accumulator, category) => {
             accumulator[category.id] = category;
             return accumulator;
@@ -81,7 +96,7 @@ const columns: TableColumn<TTransactionUI>[] = [
     {
         accessorKey: "created_at",
         header: "Date",
-        cell: ({ row }) => formatDate(row.getValue("created_at")).date,
+        cell: ({ row }) => useDateTimeFormatter(row.getValue("created_at")).date,
     },
     {
         accessorKey: "category_name",

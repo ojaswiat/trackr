@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex gap-4 pb-6 pt-2 justify-between items-center scrollbar-custom overflow-x-scroll">
+    <div class="w-full flex gap-8 pb-6 pt-2 items-center scrollbar-custom overflow-x-scroll">
         <AccountCard
             v-for="account in props.accounts"
             :key="`account-card-${account.id}`"

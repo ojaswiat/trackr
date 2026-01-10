@@ -17,6 +17,7 @@ export default defineNuxtConfig({
 
     imports: {
         dirs: [
+            "composables",
             "constants",
             "stores",
             "types",

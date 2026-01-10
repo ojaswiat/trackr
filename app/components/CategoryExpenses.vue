@@ -1,18 +1,17 @@
 <template>
     <UCard>
-        <template #header>
-            <div>
-                <h5 class="text-xl font-bold text-primary w-xl">
-                    Spending by Category
-                </h5>
-                <p
-                    v-if="selectedAccount?.description"
-                    class="text-wrap text-sm text-muted">
-                    {{ selectedAccount.name }}
-                </p>
-            </div>
-        </template>
+        <div>
+            <h5 class="text-xl font-bold">
+                Spending by Category
+            </h5>
+            <p
+                class="text-wrap text-sm text-muted">
+                Where your money went
+            </p>
+        </div>
+
         <CategoryExpensesChart
+            class="mt-12"
             :categories="categories"
         />
     </UCard>
@@ -21,25 +20,25 @@
 <script setup lang="ts">
 const props = defineProps({
     selectedAccount: {
-        type: Object as PropType<TAccount>,
+        type: String,
         required: true,
     },
 });
 
-const { data: response, refresh: _refetch } = await useAsyncData(
-    () => `cat-exp-${props.selectedAccount.id}`, // Dynamic key for caching
+const { data: categoryExpenseResponse, refresh: _refetch } = await useAsyncData(
+    () => `cat-exp-${props.selectedAccount}`, // Dynamic key for caching
     () => $fetch(CATEGORIES_EXPENSE_FETCH, {
         method: "POST",
         body: {
             filters: {
-                account_id: props.selectedAccount.id === "acc_000" ? [] : [props.selectedAccount.id],
+                account_id: props.selectedAccount === "acc_000" ? [] : [props.selectedAccount],
             },
         },
     }),
-    { watch: [() => props.selectedAccount.id] },
+    { watch: [() => props.selectedAccount] },
 );
 
 const categories = computed<TCategory[]>(() => {
-    return response.value?.data.categories ?? [];
+    return categoryExpenseResponse.value?.data.categories ?? [];
 });
 </script>

@@ -28,7 +28,7 @@ export default defineEventHandler((event) => {
         id: "acc_000",
         name: "All Accounts",
         description: "Combined view of all accounts",
-        color: "#000000",
+        color: "#333333",
         total_income: allAccounts.reduce((acc, curr) => acc + (curr.total_income ?? 0), 0), // TODO: get this from group by query on transaction from DB
         total_expense: allAccounts.reduce((acc, curr) => acc + (curr.total_expense ?? 0), 0), // TODO: get this from group by query on transaction from DB
     };

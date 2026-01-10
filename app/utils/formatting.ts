@@ -1,4 +1,4 @@
-export function formatDate(isoString: string) {
+export function useDateTimeFormatter(isoString: string) {
     const date = new Date(isoString);
     const day = date.getDate().toString().padStart(2, "0");
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -9,7 +9,7 @@ export function formatDate(isoString: string) {
     const ampm = date.getHours() >= 12 ? "PM" : "AM";
 
     return {
-        date: `${day} ${month} ${year}`,
+        date: `${day} ${month}, ${year}`,
         time: ` ${hours}:${minutes} ${ampm}`,
     };
 }

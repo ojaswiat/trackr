@@ -1,7 +1,12 @@
 <template>
     <UCard
-        class="w-60 flex-shrink-0 flex flex-col hover:scale-105 transition-transform duration-300 ease-in-out"
-        :style="{ background: `linear-gradient(to right, ${props.account.color}00, ${props.account.color}11)` }"
+        class="w-60 flex-shrink-0 flex flex-col hover:scale-105 transition-transform duration-300 ease-in-out hover:border"
+        :style="{
+            borderColor: props.account.color,
+            background: `linear-gradient(to right, ${props.account.color}00, ${props.account.color}11)`,
+            backgroundColor: props.account.id === selectedAccount ? props.account.color : 'transparent',
+            color: props.account.id === selectedAccount ? 'white' : 'inherit',
+        }"
         as="button"
         @click="handleAccountSelect(props.account.id)">
         <div class="flex flex-col gap-2">
@@ -9,24 +14,24 @@
                 <UIcon
                     name="i-lucide:wallet"
                     class="size-6"
-                    :style="{ color: props.account.color }"
+                    :style="{ color: props.account.id === selectedAccount ? 'white' : props.account.color }"
                 />
 
                 <UIcon
                     v-if="props.account.id === selectedAccount"
                     name="i-lucide:circle-check"
                     class="size-6"
-                    :style="{ color: props.account.color }"
+                    :style="{ color: props.account.id === selectedAccount ? 'white' : props.account.color }"
                 />
                 <UIcon
                     v-else
                     name="i-lucide:circle"
                     class="size-6"
-                    :style="{ color: props.account.color }"
+                    :style="{ color: props.account.id === selectedAccount ? 'white' : props.account.color }"
                 />
             </div>
 
-            <div class="text-sm text-gray-500 text-left">
+            <div class="text-sm text-inherit text-left">
                 {{ props.account.name }}
             </div>
 

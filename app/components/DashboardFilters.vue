@@ -1,61 +1,59 @@
 <template>
-    <div class="flex flex-wrap items-center justify-end gap-4 w-full">
-        <USelect
-            v-model="selectedAccount"
-            class="w-60"
-            :items="accountSelectOptions"
-            placeholder="Select an account"
-        />
+    <div class="flex flex-wrap items-end justify-between gap-4 w-full">
+        <p class="text-sm font-semibold text-muted">
+            Data between {{ df.format(selectedDateRange.start?.toDate(getLocalTimeZone())) }} - {{ df.format(selectedDateRange.end?.toDate(getLocalTimeZone())) }}
+        </p>
 
-        <UPopover>
-            <UButton
-                color="neutral"
-                variant="outline"
-                icon="i-lucide-calendar">
-                <template v-if="calendarRange.start">
-                    <template v-if="calendarRange.end">
-                        {{ df.format(calendarRange.start.toDate(getLocalTimeZone())) }} - {{ df.format(calendarRange.end.toDate(getLocalTimeZone())) }}
+        <div class="flex flex-wrap gap-4 items-center">
+            <USelect
+                v-model="selectedAccount"
+                class="w-60"
+                :items="accountSelectOptions"
+                placeholder="Select an account"
+            />
+
+            <UPopover>
+                <UButton
+                    color="neutral"
+                    variant="outline"
+                    icon="i-lucide-calendar">
+                    <template v-if="selectedDateRange.start">
+                        <template v-if="selectedDateRange.end">
+                            {{ df.format(selectedDateRange.start.toDate(getLocalTimeZone())) }} - {{ df.format(selectedDateRange.end.toDate(getLocalTimeZone())) }}
+                        </template>
+
+                        <template v-else>
+                            {{ df.format(selectedDateRange.start.toDate(getLocalTimeZone())) }}
+                        </template>
                     </template>
-
                     <template v-else>
-                        {{ df.format(calendarRange.start.toDate(getLocalTimeZone())) }}
+                        Pick a date
                     </template>
-                </template>
-                <template v-else>
-                    Pick a date
-                </template>
-            </UButton>
+                </UButton>
 
-            <template #content>
-                <UCalendar
-                    v-model="calendarRange"
-                    class="p-2"
-                    :number-of-months="2"
-                    range
-                />
-            </template>
-        </UPopover>
+                <template #content>
+                    <UCalendar
+                        v-model="selectedDateRange"
+                        class="p-2"
+                        :number-of-months="2"
+                        :min-value="minDate"
+                        :max-value="maxDate"
+                        range
+                    />
+                </template>
+            </UPopover>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import type { DateValue } from "@internationalized/date";
-import { CalendarDate, DateFormatter, getLocalTimeZone } from "@internationalized/date";
+import { DateFormatter, getLocalTimeZone, today } from "@internationalized/date";
 
 const props = defineProps({
     accounts: {
         type: Object as PropType<TAccount[]>,
         required: true,
-    },
-    minDate: {
-        // TODO: Need this prop to set allowed range on the calendar
-        type: Object as PropType<DateValue>,
-        required: false,
-    },
-    maxDate: {
-        // TODO: Need this prop to set allowed range on the calendar
-        type: Object as PropType<DateValue>,
-        required: false,
     },
 });
 
@@ -64,12 +62,15 @@ const df = new DateFormatter("en-UK", {
 });
 
 const selectedAccount = defineModel<string>("selectedAccount");
-
-// TODO: Emit events to catch this date range on change
-const calendarRange = shallowRef({
-    start: new CalendarDate(2026, 1, 20),
-    end: new CalendarDate(2026, 2, 10),
+const selectedDateRange = defineModel<{ start: DateValue; end: DateValue }>("selectedDateRange", {
+    default: {
+        start: today(getLocalTimeZone()).subtract({ months: 1 }),
+        end: today(getLocalTimeZone()),
+    },
 });
+
+const minDate = today(getLocalTimeZone()).subtract({ years: 1 });
+const maxDate = today(getLocalTimeZone());
 
 const accountSelectOptions = computed(() => props.accounts.map((account) => ({
     label: account.name,

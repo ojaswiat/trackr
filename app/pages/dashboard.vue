@@ -2,11 +2,13 @@
     <div class="w-full flex flex-col gap-8">
         <DashboardFilters
             v-model:selected-account="selectedAccount"
+            v-model:selected-date-range="selectedDateRange"
             :accounts="accounts"
         />
+
         <DashboardSummary
             :summary="summary"
-            :date-range="dateRange"
+            :selected-date-range="selectedDateRange"
         />
         <DashboardAccounts
             v-model:selected-account="selectedAccount"
@@ -15,7 +17,7 @@
 
         <div class="grid grid-cols-2 gap-4">
             <CategoryExpenses
-                :selected-account="selectedAccountItem"
+                :selected-account="selectedAccount"
             />
             <AccountSummary
                 :accounts="accounts.slice(1)"
@@ -25,6 +27,8 @@
 </template>
 
 <script setup lang="ts">
+import type { DateValue } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { find } from "lodash-es";
 
 definePageMeta({
@@ -42,6 +46,11 @@ const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 // TODO: default to all
 const selectedAccount = ref<string>("acc_000");
 
+const selectedDateRange = ref<{ start: DateValue; end: DateValue }>({
+    start: today(getLocalTimeZone()).subtract({ months: 1 }),
+    end: today(getLocalTimeZone()),
+});
+
 const accounts = computed(() => {
     return accountsResponse.value?.data?.accounts || [];
 });
@@ -52,12 +61,7 @@ const selectedAccountItem = computed(() => {
 
 // TODO: remove mock data
 const summary = computed(() => ({
-    total_income: 10000,
-    total_expense: 5000,
-}));
-
-const dateRange = computed(() => ({
-    startDate: "20 Dec 2025",
-    endDate: "20 Jan 2026",
+    total_income: selectedAccountItem.value?.total_income || 0,
+    total_expense: selectedAccountItem.value?.total_expense || 0,
 }));
 </script>

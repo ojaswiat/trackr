@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex flex-wrap items-center gap-4 justify-between">
+    <div class="w-full flex flex-wrap items-center gap-8">
         <UCard class="w-60 bg-gradient-to-br from-primary-50 to-primary-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
             <div class="flex flex-col gap-1">
                 <div class="flex items-center justify-between">
@@ -15,9 +15,6 @@
                 </div>
                 <p class="text-2xl font-bold">
                     {{ currency }} {{ props.summary.total_income }}
-                </p>
-                <p class="text-sm">
-                    {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
                 </p>
             </div>
         </UCard>
@@ -38,9 +35,6 @@
                 <p class="text-2xl font-bold">
                     {{ currency }} {{ props.summary.total_expense }}
                 </p>
-                <p class="text-sm">
-                    {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
-                </p>
             </div>
         </UCard>
 
@@ -60,22 +54,21 @@
                 <p class="text-2xl font-bold">
                     {{ currency }} {{ props.summary.total_income - props.summary.total_expense }}
                 </p>
-                <p class="text-sm">
-                    {{ props.dateRange.startDate }} - {{ props.dateRange.endDate }}
-                </p>
             </div>
         </UCard>
     </div>
 </template>
 
 <script setup lang="ts">
+import type { DateValue } from "@internationalized/date";
+
 const props = defineProps({
     summary: {
         type: Object as PropType<TDashboardSummary>,
         required: true,
     },
-    dateRange: {
-        type: Object as PropType<TDateRange>,
+    selectedDateRange: {
+        type: Object as PropType<{ start: DateValue; end: DateValue }>,
         required: true,
     },
 });
