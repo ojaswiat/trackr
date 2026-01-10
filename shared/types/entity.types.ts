@@ -11,17 +11,16 @@ export type TAccount = {
     total_expense?: number;
 };
 
-export type TAccountList = TAccount[];
-
 export type TCategory = {
     id: string;
     name: string;
     description: string;
     color: string;
     type: TCategoryType;
-};
 
-export type TCategoryList = TCategory[];
+    // TODO: get this from group by query on transaction from DB
+    total_amount?: number;
+};
 
 export type TTransaction = {
     id: string;
@@ -33,5 +32,3 @@ export type TTransaction = {
     created_at: string;
     updated_at: string;
 };
-
-export type TTransactionList = TTransaction[];

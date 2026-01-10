@@ -42,7 +42,7 @@ async function signInWithGitHub() {
 watch(user, () => {
     if (user.value) {
         // Redirect to /home instead of default '/'
-        navigateTo(ROUTE_HOME);
+        navigateTo(ROUTE_DASHBOARD);
     }
 }, { immediate: true });
 

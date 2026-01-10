@@ -63,17 +63,16 @@ useHead({
 const selectedAccount = ref<TAccount | null>(null);
 const showAddTransactionModal = ref(false);
 
-const accounts = computed<TAccountList>(() => {
-    return (accountsResponse.value?.data.accounts ?? []) as TAccountList;
+const accounts = computed<TAccount[]>(() => {
+    return (accountsResponse.value?.data.accounts ?? []) as TAccount[];
 });
 
-const summaryAccounts = computed<TAccountList>(() => {
-    return accounts.value.slice(1)
-    ;
+const summaryAccounts = computed<TAccount[]>(() => {
+    return accounts.value.slice(1);
 });
 
-const categories = computed<TCategoryList>(() => {
-    return (categoriesResponse.value?.data.categories ?? []) as TCategoryList;
+const categories = computed<TCategory[]>(() => {
+    return (categoriesResponse.value?.data.categories ?? []) as TCategory[];
 });
 
 function onAccountSelect(accountId: string) {

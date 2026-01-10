@@ -135,11 +135,11 @@ import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
 const props = defineProps({
     accounts: {
-        type: Object as PropType<TAccountList>,
+        type: Object as PropType<TAccount[]>,
         required: true,
     },
     categories: {
-        type: Object as PropType<TCategoryList>,
+        type: Object as PropType<TCategory[]>,
         required: true,
     },
 });

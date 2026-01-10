@@ -33,7 +33,7 @@ const props = defineProps({
         required: true,
     },
     categories: {
-        type: Object as PropType<TCategoryList>,
+        type: Object as PropType<TCategory[]>,
         required: true,
     },
 });

@@ -1,6 +1,7 @@
 <template>
     <BarChart
         :data="accountsData"
+        class="chart-styles"
         :height="240"
         :categories="amountTypeMultiple"
         :y-axis="['income', 'expense']"
@@ -55,3 +56,13 @@ function xFormatter(tick: number): string {
 }
 const yFormatter = (tick: number) => tick.toString();
 </script>
+
+<style scoped>
+.chart-styles {
+    --vis-legend-spacing: 1rem;
+}
+:deep(.css-czc1aa-bullet-legend-component) {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+</style>

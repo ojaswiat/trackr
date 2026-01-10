@@ -1,6 +1,7 @@
 <template>
     <DonutChart
         :data="categoryExpenseChartData"
+        class="chart-styles"
         :height="240"
         :categories="categoryExpenseCategories"
         :radius="80"
@@ -39,3 +40,13 @@ const categoryExpenseCategories = computed(() => {
     return catetgories;
 });
 </script>
+
+<style scoped>
+.chart-styles {
+    --vis-legend-spacing: 1rem;
+}
+:deep(.css-czc1aa-bullet-legend-component) {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+</style>

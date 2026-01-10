@@ -1,9 +1,9 @@
 <template>
-    <div class="flex flex-wrap gap-4 justify-between items-center">
+    <div class="w-full flex gap-4 pb-6 pt-2 justify-between items-center scrollbar-custom overflow-x-scroll">
         <UCard
             v-for="account in accountSelectOptions"
             :key="`account-card-${account.value}`"
-            class="w-60 flex flex-col hover:scale-105 transition-transform duration-300 ease-in-out"
+            class="w-60 flex-shrink-0 flex flex-col hover:scale-105 transition-transform duration-300 ease-in-out"
             :style="{ background: `linear-gradient(to right, ${account.color}00, ${account.color}11)` }"
             as="button"
             @click="handleAccountSelect(account.value)">
@@ -44,7 +44,7 @@
 <script setup lang="ts">
 const props = defineProps({
     accounts: {
-        type: Array as PropType<TAccountList>,
+        type: Array as PropType<TAccount[]>,
         required: true,
     },
 });

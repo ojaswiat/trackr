@@ -3,12 +3,12 @@
         <template #header>
             <div>
                 <h5 class="text-xl font-bold text-primary w-xl">
-                    {{ selectedAccount?.name }}
+                    Spending by Category
                 </h5>
                 <p
                     v-if="selectedAccount?.description"
                     class="text-wrap text-sm text-muted">
-                    {{ selectedAccount.description }}
+                    {{ selectedAccount.name }}
                 </p>
             </div>
         </template>

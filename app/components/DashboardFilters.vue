@@ -44,7 +44,7 @@ import { CalendarDate, DateFormatter, getLocalTimeZone } from "@internationalize
 
 const props = defineProps({
     accounts: {
-        type: Object as PropType<TAccountList>,
+        type: Object as PropType<TAccount[]>,
         required: true,
     },
     minDate: {

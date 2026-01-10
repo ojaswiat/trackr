@@ -12,10 +12,21 @@
             v-model:selected-account="selectedAccount"
             :accounts="accounts"
         />
+
+        <div class="grid grid-cols-2 gap-4">
+            <CategoryExpenses
+                :selected-account="selectedAccountItem"
+            />
+            <AccountSummary
+                :accounts="accounts.slice(1)"
+            />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { find } from "lodash-es";
+
 definePageMeta({
     title: "Dashboard",
     description: "Welcome back! Here's your financial overview.",
@@ -33,6 +44,10 @@ const selectedAccount = ref<string>("acc_000");
 
 const accounts = computed(() => {
     return accountsResponse.value?.data?.accounts || [];
+});
+
+const selectedAccountItem = computed(() => {
+    return find(accounts.value, (account) => account.id === selectedAccount.value) as TAccount;
 });
 
 // TODO: remove mock data
