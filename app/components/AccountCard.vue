@@ -1,42 +1,39 @@
 <template>
     <UCard
+        class="w-60 flex-shrink-0 flex flex-col hover:scale-105 transition-transform duration-300 ease-in-out"
+        :style="{ background: `linear-gradient(to right, ${props.account.color}00, ${props.account.color}11)` }"
         as="button"
-        class="w-sm"
-        @click="emits('selectAccount', props.account.id)">
-        <template #header>
-            <p class="font-semibold text-primary text-left">
-                {{ props.account.name }}
-            </p>
-        </template>
+        @click="handleAccountSelect(props.account.id)">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between gap-2">
+                <UIcon
+                    name="i-lucide:wallet"
+                    class="size-6"
+                    :style="{ color: props.account.color }"
+                />
 
-        <div class="flex justify-between items-center">
-            <div class="flex justify-between items-center gap-2 text-primary font-semibold">
-                <p>
-                    {{ props.account.total_income }}
-                </p>
-                <Icon
-                    name="i-lucide:square-arrow-down-right"
-                    class="h-4 w-4"
+                <UIcon
+                    v-if="props.account.id === selectedAccount"
+                    name="i-lucide:circle-check"
+                    class="size-6"
+                    :style="{ color: props.account.color }"
+                />
+                <UIcon
+                    v-else
+                    name="i-lucide:circle"
+                    class="size-6"
+                    :style="{ color: props.account.color }"
                 />
             </div>
-            <div class="flex justify-between items-center gap-2 text-red-500 font-semibold">
-                <p>
-                    {{ props.account.total_expense }}
-                </p>
-                <Icon
-                    name="i-lucide:square-arrow-up-right"
-                    class="h-4 w-4"
-                />
+
+            <div class="text-sm text-gray-500 text-left">
+                {{ props.account.name }}
+            </div>
+
+            <div class="text-lg font-bold text-left">
+                {{ currency }} {{ (props.account.total_income ?? 0) - (props.account.total_expense ?? 0) }}
             </div>
         </div>
-
-        <template
-            v-if="props.account.description"
-            #footer>
-            <p class="text-left text-sm text-wrap">
-                {{ props.account.description }}
-            </p>
-        </template>
     </UCard>
 </template>
 
@@ -48,5 +45,15 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(["selectAccount"]);
+const selectedAccount = defineModel<string>("selectedAccount");
+
+// TODO: Get this from the user store
+const currency = computed(() => {
+    // return useUserStore().user?.currency || "£";
+    return "£";
+});
+
+function handleAccountSelect(accountId: string) {
+    selectedAccount.value = accountId;
+}
 </script>
