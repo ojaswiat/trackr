@@ -60,15 +60,9 @@
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from "@internationalized/date";
-
 const props = defineProps({
     summary: {
-        type: Object as PropType<TDashboardSummary>,
-        required: true,
-    },
-    selectedDateRange: {
-        type: Object as PropType<{ start: DateValue; end: DateValue }>,
+        type: Object as PropType<TAccountSummary>,
         required: true,
     },
 });

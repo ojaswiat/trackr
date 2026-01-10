@@ -8,15 +8,18 @@
                 Add Account
             </UButton>
         </div>
+
         <AccountsAccounts
             v-model:selected-account="selectedAccount"
             class="px-4"
             :accounts="accounts"
             @on-add-account="onAddAccount"
         />
+
         <AccountDetails
             class="px-4"
             :account="selectedAccountItem"
+            :summary="summary"
         />
     </div>
 </template>
@@ -45,6 +48,11 @@ const selectedAccount = ref<string>("");
 const selectedAccountItem = computed(() => {
     return find(accounts.value, (account) => account.id === selectedAccount.value);
 });
+// TODO: remove mock data
+const summary = computed(() => ({
+    total_income: selectedAccountItem.value?.total_income || 0,
+    total_expense: selectedAccountItem.value?.total_expense || 0,
+}));
 
 function onAddAccount() {
     console.info("Add account clicked");

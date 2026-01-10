@@ -10,7 +10,6 @@
         <DashboardSummary
             class="px-4"
             :summary="summary"
-            :selected-date-range="selectedDateRange"
         />
         <DashboardAccounts
             v-model:selected-account="selectedAccount"

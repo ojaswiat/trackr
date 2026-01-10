@@ -1,6 +1,6 @@
 export type TTransactionUI = TTransaction & { category_name?: string; category_color?: string };
 
-export type TDashboardSummary = {
+export type TAccountSummary = {
     total_income: number;
     total_expense: number;
 };
