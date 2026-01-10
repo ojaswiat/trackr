@@ -17,7 +17,7 @@
         />
 
         <AccountDetails
-            class="px-4"
+            class="px-4 mt-8"
             :account="selectedAccountItem"
             :summary="summary"
         />

@@ -13,7 +13,7 @@
                 root: 'border border-dashed border-muted hover:border-primary hover:bg-primary-50',
             }"
             @click="emits('onAddAccount')">
-            <div class="add-card-body flex flex-col gap-4 items-center text-muted hover:text-primary">
+            <div class="add-card-body flex flex-col gap-4 items-center text-muted">
                 <div class="add-icon-bg flex items-center w-12 h-12 justify-center rounded-full bg-gray-200">
                     <UIcon
                         name="i-lucide:plus"
@@ -45,6 +45,7 @@ const selectedAccount = defineModel<string>("selectedAccount");
 <style scoped>
 .add-card:hover {
     .add-card-body {
+        color: var(--color-primary);
         .add-icon-bg {
             background-color: white;
         }
