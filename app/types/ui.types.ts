@@ -9,3 +9,9 @@ export type TDateRange = {
     startDate: string;
     endDate: string;
 };
+
+export type TUISideNavItem = {
+    name: string;
+    route: string;
+    icon: string;
+};

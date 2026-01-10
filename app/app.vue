@@ -23,7 +23,7 @@ useHead({
     },
 });
 
-const title = "TrackR";
+const title = "trackr.";
 const description = "Your app for tracking expenses and managing your finances";
 
 useSeoMeta({

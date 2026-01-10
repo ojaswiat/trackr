@@ -1,6 +1,6 @@
 <template>
-    <header class="w-full flex flex-col gap-2 mb-4">
-        <h1 class="text-3xl font-bold">
+    <header class="w-full flex flex-col gap-2">
+        <h1 class="text-4xl font-bold">
             {{ metaTitle || 'Dashboard' }}
         </h1>
         <p class="text-muted">

@@ -48,7 +48,7 @@ watch(user, () => {
 
 useHead({
     meta: [
-        { content: "Sign in to TrackR", name: "description" },
+        { content: "Sign in to trackr.", name: "description" },
     ],
     title: "Sign In",
 });

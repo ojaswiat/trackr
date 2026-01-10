@@ -11,7 +11,7 @@
 <script setup lang="ts">
 useHead({
     titleTemplate: (titleChunk) => {
-        return titleChunk ? `TrackR | ${titleChunk}` : "TrackR";
+        return titleChunk ? `trackr. | ${titleChunk}` : "trackr.";
     },
 });
 </script>

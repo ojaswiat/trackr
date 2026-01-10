@@ -1,6 +1,6 @@
 <template>
     <UCard
-        class="w-60 flex-shrink-0 flex flex-col card-hover"
+        class="w-60 flex-shrink-0 card-hover"
         :style="{
             borderColor: props.account.color,
             background: `linear-gradient(to right, ${props.account.color}00, ${props.account.color}11)`,
@@ -62,15 +62,3 @@ function handleAccountSelect(accountId: string) {
     selectedAccount.value = accountId;
 }
 </script>
-
-<style scoped>
-.card-hover {
-    transform-origin: bottom center;
-    transform: scale(1);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid;
-}
-.card-hover:hover {
-    transform: scale(1.03);
-}
-</style>

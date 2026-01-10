@@ -15,10 +15,4 @@ export const ROUTE_ABOUT = "/about";
 export const ROUTE_TOS = "/tos";
 export const ROUTE_PRIVACY = "/privacy";
 
-export const PUBLIC_ROUTES = [
-    ROUTE_INDEX,
-    ROUTE_SIGNIN,
-    ROUTE_ABOUT,
-    ROUTE_TOS,
-    ROUTE_PRIVACY,
-];
+export type TSideNavRoutes = typeof ROUTE_DASHBOARD | typeof ROUTE_ACCOUNTS | typeof ROUTE_TRANSACTIONS;
