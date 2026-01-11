@@ -4,7 +4,7 @@
             <UButton
                 class="w-fit"
                 icon="i-lucide:plus"
-                @click="onAddAccount">
+                @click="showAddAccountModal = true">
                 Add Account
             </UButton>
         </div>
@@ -13,7 +13,7 @@
             v-model:selected-account="selectedAccount"
             class="px-4"
             :accounts="accounts"
-            @on-add-account="onAddAccount"
+            @on-add-account="showAddAccountModal = true"
         />
 
         <AccountDetails
@@ -22,13 +22,20 @@
             :summary="summary"
         />
 
-        <div class="h-96">
-            <UIColorPicker
-                v-model:selected-color="selectedColor"
-                class="px-4"
-                :colors="COLORS"
-            />
-        </div>
+        <UModal
+            v-model:open="showAddAccountModal"
+            :modal="true"
+            :dismissible="false"
+            title="New Account"
+            :close="{
+                color: 'primary',
+                variant: 'outline',
+                class: 'rounded-full',
+            }">
+            <template #body>
+                <AccountAddForm v-model:open="showAddAccountModal" />
+            </template>
+        </UModal>
     </div>
 </template>
 
@@ -52,6 +59,7 @@ const accounts = computed(() => {
 });
 
 const selectedAccount = ref<string>("");
+const showAddAccountModal = ref<boolean>(false);
 
 const selectedAccountItem = computed(() => {
     return find(accounts.value, (account) => account.id === selectedAccount.value);
@@ -61,12 +69,4 @@ const summary = computed(() => ({
     total_income: selectedAccountItem.value?.total_income || 0,
     total_expense: selectedAccountItem.value?.total_expense || 0,
 }));
-
-function onAddAccount() {
-    console.info("Add account clicked");
-}
-
-// TODO: REMOVE
-const COLORS = ["white", "red", "green", "blue", "yellow", "orange", "purple", "pink"];
-const selectedColor = ref<string>("white");
 </script>
