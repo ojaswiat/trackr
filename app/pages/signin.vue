@@ -15,7 +15,8 @@
                 icon="i-simple-icons-google"
                 color="neutral"
                 class="w-full flex justify-center cursor-pointer"
-                variant="outline">
+                variant="outline"
+                @click="signInWithGoogle">
                 Sign in with Google
             </UButton>
         </div>
@@ -32,6 +33,19 @@ async function signInWithGitHub() {
             redirectTo: `${window.location.origin}${ROUTE_CONFIRM}`,
         },
         provider: "github",
+    });
+
+    if (error) {
+        console.error("Error signing in:", error);
+    }
+}
+
+async function signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+        options: {
+            redirectTo: `${window.location.origin}${ROUTE_CONFIRM}`,
+        },
+        provider: "google",
     });
 
     if (error) {

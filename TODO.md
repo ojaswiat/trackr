@@ -1,19 +1,24 @@
-- Add account form
-- Toast for success and error messages
-- Move category and accounts to their store.
-- Create tables - add functions, triggers, and RLS.
-- Add pagination to all the APIs.
-- Limit the date range that can be selected to one month.
-- Add Date range filter to all the APIs and use that to display the data on the dashboard.
-- Add all accounts - the DB, APIs, and pagination will handle scaling issues. Sum or transactions, grouped by categories will fetch you the categories and the total amount spent on each category.
-- Implement CRUD and refresh for applicable entities - accounts and categories.
-- Add skeleton and loading states properly
-- Make the UI responsive
-- Add page titles using layout pageMeta
-
-- Pages: Landing, Privacy Policy, TOS
-- Header
-- Will need to scale with large numbers
+- Create database
+    - Drizzle migrate
+    - Add functions, triggers and RLS via Supabase SQL queries
+- Create back-end APIs
+    - Add pagination to all the APIs.
+    - Add Date range filter to all the APIs and use that to display the data on the dashboard.
+- Integrate the back-end APIs with the front-end.
+    - Move category and accounts to their store.
+    - Toast for success and error messages
+    - Limit the date range that can be selected to one month.
+    - Add all accounts - the DB, APIs, and pagination will handle scaling issues. Sum or transactions, grouped by categories will fetch you the categories and the total amount spent on each category.
+    - Implement refresh - accounts and categories.
+- Final touches
+    - Add page titles using layout pageMeta
+    - Add skeleton and loading states properly
+    - Make the UI responsive
+- Production
+    - Create static pages - Landing, Privacy Policy, TOS
+    - Deploy to Vercel
+    - Get a domain name and logo (Picsart)
+    - [Need brand verification for google login](https://console.cloud.google.com/auth/branding?authuser=1&project=trackr-nuxt-app)
 
 Account transaction chart data
 
