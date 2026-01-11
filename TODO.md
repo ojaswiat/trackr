@@ -1,3 +1,4 @@
+- Move category and accounts to their store.
 - Create tables - add functions, triggers, and RLS.
 - Add pagination to all the APIs.
 - Limit the date range that can be selected to one month.

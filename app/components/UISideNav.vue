@@ -10,6 +10,14 @@
             </p>
         </div>
 
+        <UButton
+            class="mx-8 hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer"
+            icon="i-lucide:plus"
+            size="xl"
+            @click="emits('onAddTransaction')">
+            New Transaction
+        </UButton>
+
         <div
             class="flex flex-col gap-3">
             <NuxtLink
@@ -37,15 +45,49 @@
             </NuxtLink>
         </div>
 
-        <NuxtLink
-            class="mt-auto"
-            target="_blank">
-            Footer
-        </NuxtLink>
+        <div class="mt-auto grid">
+            <UButton
+                class="cursor-pointer mb-4"
+                icon="i-lucide:help-circle"
+                variant="ghost"
+                :ui="{
+                    base: 'rounded-none py-3 px-4 transition-all duration-200 ease-in-out hover:translate-x-2 hover:bg-transparent',
+                }"
+                :to="ROUTE_HELP">
+                Help
+            </UButton>
+
+            <UButton
+                class="cursor-pointer mb-4"
+                icon="i-lucide:log-out"
+                variant="ghost"
+                :ui="{
+                    base: 'rounded-none py-3 px-4 transition-all duration-200 ease-in-out hover:translate-x-2 hover:bg-transparent',
+                }"
+                @click="handleSignOut">
+                Sign out
+            </UButton>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
+const emits = defineEmits(["onAddTransaction"]);
+
+const supabase = useSupabaseClient();
+const router = useRouter();
+
+async function handleSignOut() {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+        console.error("Logout error:", error);
+        return;
+    }
+
+    await router.push(ROUTE_SIGNIN); // or homepage
+}
+
 function isRouteActive(
     currentPath: string,
     route: TSideNavRoutes,
