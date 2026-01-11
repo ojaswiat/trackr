@@ -7,6 +7,7 @@
             :account="account"
         />
         <UCard
+            v-if="props.accounts.length < 5"
             as="button"
             class="accounts-card-hover add-card w-60 h-[136px] flex-shrink-0 cursor-pointer"
             :ui="{

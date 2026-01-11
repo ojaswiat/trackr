@@ -1,3 +1,5 @@
+- Add account form
+- Toast for success and error messages
 - Move category and accounts to their store.
 - Create tables - add functions, triggers, and RLS.
 - Add pagination to all the APIs.

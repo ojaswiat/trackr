@@ -21,6 +21,14 @@
             :account="selectedAccountItem"
             :summary="summary"
         />
+
+        <div class="h-96">
+            <UIColorPicker
+                v-model:selected-color="selectedColor"
+                class="px-4"
+                :colors="COLORS"
+            />
+        </div>
     </div>
 </template>
 
@@ -57,4 +65,8 @@ const summary = computed(() => ({
 function onAddAccount() {
     console.info("Add account clicked");
 }
+
+// TODO: REMOVE
+const COLORS = ["white", "red", "green", "blue", "yellow", "orange", "purple", "pink"];
+const selectedColor = ref<string>("white");
 </script>
