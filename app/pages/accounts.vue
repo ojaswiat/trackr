@@ -29,7 +29,8 @@
             v-model:open="showAddAccountModal"
             :modal="true"
             :dismissible="false"
-            title="New Account"
+            :title="selectedAccountItem ? `${selectedAccountItem?.name}` : 'New Account'"
+            :description="selectedAccountItem ? `Edit account ${selectedAccountItem?.name}` : 'Add a new account'"
             :close="{
                 color: 'neutral',
                 class: 'rounded-full',
@@ -46,31 +47,17 @@
             v-model:open="showDeleteAccountModal"
             :modal="true"
             :dismissible="false"
-            title="Delete Account"
+            :title="`${selectedAccountItem?.name}`"
+            :description="`Delete account ${selectedAccountItem?.name}`"
             :close="{
                 color: 'neutral',
                 class: 'rounded-full',
             }">
             <template #body>
-                <p>This will permanently delete the account {{ selectedAccountItem?.name }}. Are you sure you want to proceed?</p>
-            </template>
-
-            <template #footer>
-                <div class="w-full flex justify-end gap-4">
-                    <UButton
-                        class="w-fit"
-                        variant="ghost"
-                        color="neutral"
-                        @click="showDeleteAccountModal = false">
-                        Cancel
-                    </UButton>
-                    <UButton
-                        class="w-fit"
-                        color="error"
-                        @click="deleteAccount">
-                        Delete
-                    </UButton>
-                </div>
+                <AccountDeleteForm
+                    v-model:open="showDeleteAccountModal"
+                    :account="selectedAccountItem"
+                />
             </template>
         </UModal>
     </div>
@@ -108,8 +95,4 @@ const summary = computed(() => ({
     total_income: selectedAccountItem.value?.total_income || 0,
     total_expense: selectedAccountItem.value?.total_expense || 0,
 }));
-
-function deleteAccount() {
-    console.info(`Deleting account ${selectedAccountItem.value?.name}`);
-}
 </script>

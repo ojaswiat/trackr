@@ -16,9 +16,9 @@
             :modal="true"
             :dismissible="false"
             title="New Transaction"
+            description="Add a new transaction"
             :close="{
-                color: 'primary',
-                variant: 'outline',
+                color: 'neutral',
                 class: 'rounded-full',
             }">
             <template #body>
