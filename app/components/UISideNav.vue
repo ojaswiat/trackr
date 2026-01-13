@@ -21,7 +21,7 @@
         <div
             class="flex flex-col gap-3">
             <NuxtLink
-                v-for="routeItem, route in UI_SIDE_NAV"
+                v-for="routeItem, route in UI_SIDE_NAV_LINKS"
                 :key="`route-${route}`"
                 class="cursor-pointer"
                 :class="{
@@ -47,25 +47,17 @@
 
         <div class="mt-auto grid">
             <UButton
+                v-for="buttonItem in UI_SIDE_NAV_BUTTONS"
+                :key="`button-${buttonItem.route}`"
                 class="cursor-pointer mb-4"
-                icon="i-lucide:help-circle"
+                :icon="buttonItem.icon"
                 variant="ghost"
                 :ui="{
                     base: 'rounded-none py-3 px-4 transition-all duration-200 ease-in-out hover:translate-x-2 hover:bg-transparent',
                 }"
-                :to="ROUTE_HELP">
-                Help
-            </UButton>
-
-            <UButton
-                class="cursor-pointer mb-4"
-                icon="i-lucide:log-out"
-                variant="ghost"
-                :ui="{
-                    base: 'rounded-none py-3 px-4 transition-all duration-200 ease-in-out hover:translate-x-2 hover:bg-transparent',
-                }"
-                @click="handleSignOut">
-                Sign out
+                :to="buttonItem.route"
+                @click="buttonItem.onClick">
+                {{ buttonItem.name }}
             </UButton>
         </div>
     </div>
@@ -73,6 +65,45 @@
 
 <script setup lang="ts">
 const emits = defineEmits(["onAddTransaction"]);
+
+const UI_SIDE_NAV_LINKS = {
+    [ROUTE_DASHBOARD]: {
+        name: "Dashboard",
+        route: ROUTE_DASHBOARD,
+        icon: "i-lucide:layout-dashboard",
+    },
+    [ROUTE_ACCOUNTS]: {
+        name: "Accounts",
+        route: ROUTE_ACCOUNTS,
+        icon: "i-lucide:wallet",
+    },
+    [ROUTE_TRANSACTIONS]: {
+        name: "Transactions",
+        route: ROUTE_TRANSACTIONS,
+        icon: "i-lucide:notepad-text",
+    },
+} as const;
+
+const UI_SIDE_NAV_BUTTONS = {
+    [ROUTE_PROFILE]: {
+        name: "Profile",
+        route: ROUTE_PROFILE,
+        icon: "i-lucide:user",
+        onClick: () => {},
+    },
+    [ROUTE_HELP]: {
+        name: "Help",
+        route: ROUTE_HELP,
+        icon: "i-lucide:help-circle",
+        onClick: () => {},
+    },
+    [ROUTE_SIGNIN]: {
+        name: "Sign out",
+        route: ROUTE_SIGNIN,
+        icon: "i-lucide:log-out",
+        onClick: handleSignOut,
+    },
+} as const;
 
 const supabase = useSupabaseClient();
 const router = useRouter();
@@ -90,7 +121,7 @@ async function handleSignOut() {
 
 function isRouteActive(
     currentPath: string,
-    route: TSideNavRoutes,
+    route: keyof typeof UI_SIDE_NAV_LINKS,
 ): boolean {
     // For other routes, check if current path starts with the route value
     return currentPath === route || currentPath.startsWith(`${route}/`);

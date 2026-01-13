@@ -69,7 +69,7 @@ import { find, isEmpty } from "lodash-es";
 definePageMeta({
     title: "Accounts",
     description: "Manage your income sources",
-    layout: "new",
+    layout: "app",
 });
 
 useHead({

@@ -10,6 +10,10 @@
     - Limit the date range that can be selected to one month.
     - Add all accounts - the DB, APIs, and pagination will handle scaling issues. Sum or transactions, grouped by categories will fetch you the categories and the total amount spent on each category.
     - Implement refresh - accounts and categories.
+- User CRUD
+    - Add user profile page
+    - Add user profile form update
+    - Add user profile delete - delete all accounts and transactions associated with the user.
 - Final touches
     - Add page titles using layout pageMeta
     - Add skeleton and loading states properly
@@ -20,6 +24,8 @@
     - Get a domain name and logo (Picsart)
     - [Need brand verification for google login](https://console.cloud.google.com/auth/branding?authuser=1&project=trackr-nuxt-app)
     - Publish the app in Google Console
+
+Further improvements - Add user profile image - Add custom categories
 
 Account transaction chart data
 

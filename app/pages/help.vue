@@ -6,7 +6,7 @@
 definePageMeta({
     title: "Help",
     description: "Here you can find information on how to use Trackr",
-    layout: "new",
+    layout: "app",
 });
 
 useHead({

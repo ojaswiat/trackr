@@ -115,6 +115,10 @@
                     placeholder="Description about this transaction"
                     :maxlength="60"
                 />
+
+                <template #hint>
+                    {{ state.description.length }}/60
+                </template>
             </UFormField>
         </div>
 
@@ -268,13 +272,16 @@ const categoryOptions = computed(() => {
 });
 
 function resetForm() {
-    state.value = initialState;
+    state.value.account = "";
+    state.value.category = "";
+    state.value.date = today(getLocalTimeZone()).toString();
+    state.value.description = "";
+    state.value.type = 1 as TTransactionType;
 }
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
     console.info(event.data);
     toast.add({ title: "Success", description: "Transaction added successfully!", color: "success" });
-    resetForm();
 
     if (!save.value) {
         modalOpen.value = false;

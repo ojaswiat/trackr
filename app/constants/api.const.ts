@@ -11,9 +11,8 @@ export const ROUTE_TRANSACTIONS = "/transactions";
 export const ROUTE_ACCOUNTS = "/accounts";
 
 // TODO: Implment these pages
+export const ROUTE_PROFILE = "/profile";
 export const ROUTE_HELP = "/help";
 export const ROUTE_ABOUT = "/about";
 export const ROUTE_TERMS = "/terms";
 export const ROUTE_PRIVACY = "/privacy";
-
-export type TSideNavRoutes = typeof ROUTE_DASHBOARD | typeof ROUTE_ACCOUNTS | typeof ROUTE_TRANSACTIONS;

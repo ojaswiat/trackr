@@ -31,7 +31,7 @@ import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 definePageMeta({
     title: "Transactions",
     description: "Manage your transactions here",
-    layout: "new",
+    layout: "app",
 });
 
 useHead({

@@ -9,7 +9,7 @@
                     name="i-lucide:alert-triangle"
                     class="w-12 h-12 text-error"
                 />
-                <p>This will permanently delete the account and all of its transactions <span class="text-error">{{ props.account?.name }}</span>. Are you sure you want to proceed?</p>
+                <p>This will permanently delete the account <span class="text-error">{{ props.account?.name }}</span>{{ !state.keep_transactions ? " and all of its transactions" : "" }}. Are you sure you want to proceed?</p>
             </div>
             <UFormField
                 label="Keep transactions"
@@ -17,6 +17,7 @@
                 class="flex items-center gap-2 flex-row-reverse justify-center">
                 <UCheckbox
                     v-model="state.keep_transactions"
+                    class="mb-[6px]"
                 />
             </UFormField>
 

@@ -36,7 +36,7 @@ import { find } from "lodash-es";
 definePageMeta({
     title: "Dashboard",
     description: "Welcome back! Here's your financial overview",
-    layout: "new",
+    layout: "app",
 });
 
 useHead({

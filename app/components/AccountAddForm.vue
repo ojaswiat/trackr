@@ -12,6 +12,9 @@
                     v-model="state.name"
                     class="w-full"
                 />
+                <template #hint>
+                    {{ state.name.length }}/30
+                </template>
             </UFormField>
 
             <UFormField
@@ -24,6 +27,9 @@
                     placeholder="Optional description about this account"
                     :maxlength="60"
                 />
+                <template #hint>
+                    {{ state.description.length }}/60
+                </template>
             </UFormField>
 
             <UFormField
@@ -116,7 +122,7 @@ const colorOptions = [
 ];
 
 const schema = z.object({
-    name: z.string().min(1, "Account name is required"),
+    name: z.string().min(1, "Account name is required").max(30, "Account name must be 30 characters or less"),
     initial_balance: z.number().min(0, "Initial balance must be positive"),
     color: z.string().min(1, "Please choose a color for this account"),
     description: z.string().max(60, "Description must be 60 characters or less").optional(),
@@ -145,6 +151,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 function resetForm() {
-    state.value = initialState;
+    state.value.name = "";
+    state.value.initial_balance = 0;
+    state.value.color = "";
+    state.value.description = "";
 }
 </script>
