@@ -12,8 +12,8 @@ import {
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-    first_name: varchar({ length: 30 }).notNull(),
-    last_name: varchar({ length: 30 }).notNull(),
+    first_name: varchar({ length: 30 }),
+    last_name: varchar({ length: 30 }),
     email: varchar().notNull().unique(),
 
     currency: varchar({ length: 3 }).notNull().default("GBP"),

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UCard>
+        <UCard class="dark:bg-neutral-800">
             <h5 class="text-xl font-bold">
                 All Transactions
             </h5>

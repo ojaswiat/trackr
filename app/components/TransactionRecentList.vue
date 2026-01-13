@@ -1,5 +1,5 @@
 <template>
-    <UCard class="w-full">
+    <UCard class="w-full dark:bg-neutral-800">
         <h5 class="text-xl font-bold">
             Recent Transactions
         </h5>

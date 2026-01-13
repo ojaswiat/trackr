@@ -1,5 +1,5 @@
 <template>
-    <UCard>
+    <UCard class="dark:bg-neutral-800">
         <div>
             <h5 class="text-xl font-bold">
                 Spending by Category
