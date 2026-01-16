@@ -1,4 +1,6 @@
 - Create back-end APIs
+    - Put the server side queries to handlers such that some page specific apis can be created such as /dashboard.get.ts.
+    - Add server side middleware to API routes to check authentication status.
     - Add pagination to all the APIs.
     - Add Date range filter to all the APIs and use that to display the data on the dashboard.
 - Integrate the back-end APIs with the front-end.

@@ -33,6 +33,8 @@ export const accounts = pgTable("accounts", {
     name: varchar({ length: 30 }).notNull(),
     user_id: uuid().references(() => users.id, { onDelete: "cascade" }).notNull(),
     description: varchar({ length: 60 }),
+    color: varchar({ length: 7 }).notNull(), // Hex color: #RRGGBB
+    initial_balance: numeric({ precision: 10, scale: 2 }).notNull().default("0"),
 
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at")
@@ -42,6 +44,8 @@ export const accounts = pgTable("accounts", {
 }, (table) => [
     index("acconts_user_id_idx").on(table.user_id),
 ]);
+
+// type TAccount = typeof accounts.$inferSelect;
 
 export const categories = pgTable("categories", {
     id: uuid().primaryKey().default(sql`gen_random_uuid()`),
@@ -67,10 +71,10 @@ export const transactions = pgTable("transactions", {
     id: uuid().primaryKey().default(sql`gen_random_uuid()`),
     user_id: uuid().references(() => users.id, { onDelete: "cascade" }).notNull(),
     type: integer().notNull(),
-    category_id: uuid().references(() => categories.id).notNull(), // Don't delete when category is deleted
-    account_id: uuid().references(() => accounts.id).notNull(), // Users have option to delete account without deleting category
+    category_id: uuid().references(() => categories.id).notNull(), // Don't delete when category is deleted - can be null for Income type transactions
+    account_id: uuid().references(() => accounts.id, { onDelete: "set null" }), // Users have option to delete account without deleting the transaction
     amount: numeric({ precision: 10, scale: 2 }).notNull(),
-    description: varchar({ length: 60 }),
+    description: varchar({ length: 60 }).notNull(),
 
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at")
@@ -82,6 +86,7 @@ export const transactions = pgTable("transactions", {
     index("transaction_account_id_idx").on(table.account_id),
     index("transaction_user_id_idx").on(table.user_id),
     index("transaction_type_idx").on(table.type),
+    index("transaction_created_at_idx").on(table.created_at),
     check(
         "transactions_type_valid", // constraint name
         sql`${table.type} IN (0, 1)`, // condition

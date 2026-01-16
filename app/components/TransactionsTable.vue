@@ -14,17 +14,55 @@
                     :column-visibility="columnVisibility"
                     :data="transactions"
                     :ui="{
-                        root: 'px-0',
+                        root: 'px-0 overflow-auto',
                     }"
                 />
             </div>
         </UCard>
+
+        <UModal
+            v-if="selectedTransaction"
+            v-model:open="showEditTransactionModal"
+            :modal="true"
+            :dismissible="false"
+            title="Edit Transaction"
+            description="Edit this transaction"
+            :close="{
+                color: 'neutral',
+                class: 'rounded-full',
+            }">
+            <template #body>
+                <TransactionAddForm
+                    v-model:open="showEditTransactionModal"
+                    :transaction="selectedTransaction"
+                />
+            </template>
+        </UModal>
+
+        <UModal
+            v-model:open="showDeleteTransactionModal"
+            :modal="true"
+            :dismissible="false"
+            title="Delete Transaction"
+            :description="`Delete transaction of amount ${selectedTransaction?.amount}`"
+            :close="{
+                color: 'neutral',
+                class: 'rounded-full',
+            }">
+            <template #body>
+                <TransactionDeleteForm
+                    v-model:open="showDeleteTransactionModal"
+                    :transaction="selectedTransaction"
+                />
+            </template>
+        </UModal>
     </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
-import { map, reduce } from "lodash-es";
+import type { Row } from "@tanstack/vue-table";
+import { find, map, reduce } from "lodash-es";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
 const props = defineProps({
@@ -45,6 +83,12 @@ const props = defineProps({
         required: true,
     },
 });
+const UButton = resolveComponent("UButton");
+const UDropdownMenu = resolveComponent("UDropdownMenu");
+
+const showEditTransactionModal = ref(false);
+const showDeleteTransactionModal = ref(false);
+const selectedTransaction = ref<TTransaction>();
 
 const categoriesMap = computed<Record<string, TCategory>>(() => {
     return reduce(
@@ -167,7 +211,40 @@ const columns: TableColumn<TTransactionUI>[] = [
         },
     },
 
+    // Row actions
+    {
+        id: "actions",
+        meta: {
+            class: {
+                td: "text-right",
+            },
+        },
+        cell: ({ row }) => {
+            selectedTransaction.value = row.original;
+            return h(
+                UDropdownMenu,
+                {
+                    "content": {
+                        align: "end",
+                    },
+                    "items": getRowItems(row),
+                    "aria-label": "Actions dropdown",
+                },
+                () =>
+                    h(UButton, {
+                        "icon": "i-lucide-ellipsis-vertical",
+                        "color": "neutral",
+                        "variant": "ghost",
+                        "aria-label": "Actions dropdown",
+                    }),
+            );
+        },
+    },
+
     // Hidden, just there to make the category cell work with the accessor keys
+    {
+        accessorKey: "id",
+    },
     {
         accessorKey: "type",
     },
@@ -180,8 +257,38 @@ const columns: TableColumn<TTransactionUI>[] = [
 ];
 
 const columnVisibility = {
+    id: false,
     type: false,
     category_color: false,
     account_color: false,
 };
+
+function getRowItems(row: Row<TTransactionUI>) {
+    return [
+        {
+            label: "Edit",
+            icon: "i-lucide:pencil-line",
+            color: "info",
+            onSelect() {
+                onTransactionEdit(row.original.id);
+            },
+        },
+        {
+            label: "Delete",
+            icon: "i-lucide:trash-2",
+            color: "error",
+            onSelect() {
+                onTransactionDelete(row.original.id);
+            },
+        },
+    ];
+}
+
+function onTransactionEdit(id: string) {
+    showEditTransactionModal.value = true;
+}
+
+function onTransactionDelete(id: string) {
+    showDeleteTransactionModal.value = true;
+}
 </script>

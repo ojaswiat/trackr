@@ -47,12 +47,13 @@
                         </div>
                     </template>
 
-                    <template #leading>
+                    <!-- Commented out for consistency -->
+                    <!-- <template #leading>
                         <div
                             class="h-4 w-4 rounded-full mr-2"
                             :style="{ backgroundColor: state.color }">
                         </div>
-                    </template>
+                    </template> -->
                 </USelect>
             </UFormField>
 
@@ -63,7 +64,7 @@
                 <UInput
                     v-model="state.initial_balance"
                     class="w-full"
-                    :disabled="!!props.account?.id"
+                    :disabled="edit && !!props.account?.id"
                     type="number"
                     step="0.01"
                     min="0"
@@ -77,14 +78,14 @@
                     color-options
                     color="neutral"
                     variant="ghost"
-                    @click="resetForm()">
-                    Reset
+                    @click="open = false">
+                    Cancel
                 </UButton>
                 <UButton
                     type="submit"
                     color="primary"
-                    :icon="props.account?.id ? 'i-lucide:refresh-ccw' : 'i-lucide:plus'">
-                    {{ props.account?.id ? 'Update' : 'Add' }}
+                    :icon="edit && props.account?.id ? 'i-lucide:refresh-ccw' : 'i-lucide:plus'">
+                    {{ edit && props.account?.id ? 'Update' : 'Add' }}
                 </UButton>
             </div>
         </div>
@@ -104,7 +105,8 @@ const props = defineProps({
 
 const toast = useToast();
 
-const open = defineModel<boolean>("open");
+const open = defineModel<boolean>("open", { default: false });
+const edit = defineModel<boolean>("edit", { default: false });
 
 const colorOptions = [
     { label: "Red", value: "#FF6F61" }, // Coral Red
@@ -130,16 +132,16 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 const initialState = {
-    name: props.account?.name || "",
-    initial_balance: props.account?.initial_balance || 0,
-    color: props.account?.color || "",
-    description: props.account?.description || "",
+    name: edit.value ? props.account?.name || "" : "",
+    initial_balance: edit.value ? props.account?.initial_balance || 0 : 0,
+    color: edit.value ? props.account?.color || "" : "",
+    description: edit.value ? props.account?.description || "" : "",
 };
 
 const state = ref(initialState);
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    if (props.account?.id) {
+    if (edit.value && props.account?.id) {
         // Update account
         toast.add({ title: "Success", description: "Account updated successfully!", color: "success" });
     } else {
@@ -147,13 +149,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         toast.add({ title: "Success", description: "Account added successfully!", color: "success" });
     }
     console.info(event.data);
+    edit.value = false;
     open.value = false;
-}
-
-function resetForm() {
-    state.value.name = "";
-    state.value.initial_balance = 0;
-    state.value.color = "";
-    state.value.description = "";
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex flex-wrap gap-8">
+    <div class="w-full flex flex-wrap gap-8 items-center">
         <template v-if="!isEmpty(props.accounts)">
             <AccountCard
                 v-for="account in props.accounts"
@@ -28,6 +28,11 @@
                 </p>
             </div>
         </UCard>
+        <p
+            v-else
+            class="text-muted w-full">
+            You can only add 5 accounts at a time
+        </p>
     </div>
 </template>
 

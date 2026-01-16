@@ -61,9 +61,10 @@ async function signInWithGoogle() {
     }
 }
 
-watch(user, () => {
+watch(user, async () => {
     if (user.value) {
         // Redirect to /home instead of default '/'
+        await nextTick();
         navigateTo(ROUTE_DASHBOARD);
     }
 }, { immediate: true });

@@ -7,7 +7,7 @@
                 variant="ghost"
                 class="rounded-full"
                 color="info"
-                icon="i-lucide-pen-line"
+                icon="i-lucide-pencil-line"
                 @click="emits('onEditAccount')"
             />
         </UTooltip>

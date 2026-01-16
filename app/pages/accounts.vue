@@ -21,7 +21,7 @@
             class="px-4 mt-8"
             :account="selectedAccountItem"
             :summary="summary"
-            @on-edit-account="showAddAccountModal = true"
+            @on-edit-account="onEditAccount"
             @on-delete-account="showDeleteAccountModal = true"
         />
 
@@ -29,14 +29,15 @@
             v-model:open="showAddAccountModal"
             :modal="true"
             :dismissible="false"
-            :title="selectedAccountItem ? `${selectedAccountItem?.name}` : 'New Account'"
-            :description="selectedAccountItem ? `Edit account ${selectedAccountItem?.name}` : 'Add a new account'"
+            :title="edit ? `${selectedAccountItem?.name}` : 'New Account'"
+            :description="edit ? `Edit account ${selectedAccountItem?.name}` : 'Add a new account'"
             :close="{
                 color: 'neutral',
                 class: 'rounded-full',
             }">
             <template #body>
                 <AccountAddForm
+                    v-model:edit="edit"
                     v-model:open="showAddAccountModal"
                     :account="selectedAccountItem"
                 />
@@ -82,6 +83,7 @@ const accounts = computed(() => {
     return accountsResponse.value?.data?.accounts?.slice(1) || [];
 });
 
+const edit = ref(false);
 const selectedAccount = ref<string>("");
 
 const showAddAccountModal = ref<boolean>(false);
@@ -95,4 +97,9 @@ const summary = computed(() => ({
     total_income: selectedAccountItem.value?.total_income || 0,
     total_expense: selectedAccountItem.value?.total_expense || 0,
 }));
+
+function onEditAccount() {
+    edit.value = true;
+    showAddAccountModal.value = true;
+}
 </script>

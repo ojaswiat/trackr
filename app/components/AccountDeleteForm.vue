@@ -4,10 +4,10 @@
         :state="state"
         @submit="onSubmit">
         <div class="flex flex-col gap-4">
-            <div class="flex items-start gap-4">
+            <div class="flex items-center gap-4">
                 <UIcon
                     name="i-lucide:alert-triangle"
-                    class="w-12 h-12 text-error"
+                    class="w-8 h-8 text-error flex-shrink-0"
                 />
                 <p>This will permanently delete the account <span class="text-error">{{ props.account?.name }}</span>{{ !state.keep_transactions ? " and all of its transactions" : "" }}. Are you sure you want to proceed?</p>
             </div>

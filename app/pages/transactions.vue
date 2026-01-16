@@ -10,7 +10,7 @@
             :categories="categories"
         />
 
-        <TransactionsRecent
+        <TransactionsTable
             class="px-4"
             :selected-account="selectedAccount"
             :selected-category="selectedCategory"

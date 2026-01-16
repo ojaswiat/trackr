@@ -22,7 +22,7 @@
                 class: 'rounded-full',
             }">
             <template #body>
-                <TransactionAddForm v-model:modal-open="showAddTransactionModal" />
+                <TransactionAddForm v-model:open="showAddTransactionModal" />
             </template>
         </UModal>
     </div>

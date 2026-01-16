@@ -1,5 +1,6 @@
 <template>
     <UForm
+        :key="uniqueFormKey"
         :schema="schema"
         :state="state"
         @submit="onSubmit">
@@ -127,10 +128,11 @@
                 type="button"
                 color="neutral"
                 variant="ghost"
-                @click="resetForm()">
-                Reset
+                @click="open = false">
+                Cancel
             </UButton>
             <UButton
+                v-if="!props.transaction?.id"
                 type="submit"
                 color="primary"
                 variant="outline"
@@ -149,13 +151,18 @@
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from "@internationalized/date";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { TTransactionType } from "~~/shared/constants/enums";
 import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { map } from "lodash-es";
 import { z } from "zod";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
+
+const props = defineProps({
+    transaction: {
+        type: Object as PropType<TTransaction>,
+        required: false,
+    },
+});
 
 // TODO: Get this from stores
 const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
@@ -209,17 +216,18 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 const save = ref(false);
-const modalOpen = defineModel<boolean>("modalOpen", { default: false });
+const open = defineModel<boolean>("open", { default: false });
+const uniqueFormKey = ref("");
 
 const inputDate = useTemplateRef("inputDate");
 
 const initialState = {
-    type: 1 as TTransactionType,
-    date: today(getLocalTimeZone()).toString(),
-    category: "",
-    account: "",
-    amount: 0.00,
-    description: "",
+    type: props.transaction?.type ?? 1,
+    date: props.transaction?.created_at ?? today(getLocalTimeZone()).toString(),
+    category: props.transaction?.category_id ?? "",
+    account: props.transaction?.account_id ?? "",
+    amount: Number(props.transaction?.amount) ?? 0.00,
+    description: props.transaction?.description ?? "",
 };
 
 const state = ref(initialState);
@@ -271,22 +279,15 @@ const categoryOptions = computed(() => {
     }).slice(1); // Remove the first option (Income Category)
 });
 
-function resetForm() {
-    state.value.account = "";
-    state.value.category = "";
-    state.value.date = today(getLocalTimeZone()).toString();
-    state.value.description = "";
-    state.value.type = 1 as TTransactionType;
-}
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    console.info(event.data);
-    toast.add({ title: "Success", description: "Transaction added successfully!", color: "success" });
-
-    if (!save.value) {
-        modalOpen.value = false;
+    if (props.transaction?.id) {
+        // Update account
+        toast.add({ title: "Success", description: "Transaction updated successfully!", color: "success" });
+    } else {
+        // Add account
+        toast.add({ title: "Success", description: "Transaction added successfully!", color: "success" });
     }
-
-    save.value = false;
+    console.info(event.data);
+    open.value = false;
 };
 </script>

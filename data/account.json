@@ -1,0 +1,28 @@
+{
+    "accounts": [
+        {
+            "description": "Personal checking account used for daily expenses and salary deposits",
+            "id": "acc_001",
+            "name": "Barclays Current Account",
+            "color": "#FF6F61",
+            "total_income": 100000,
+            "total_expense": 50000
+        },
+        {
+            "description": "Savings account for emergency funds and long-term goals",
+            "id": "acc_002",
+            "name": "Monzo Savings Pot",
+            "color": "#FFC857",
+            "total_income": 500000,
+            "total_expense": 250000
+        },
+        {
+            "description": "Business account for freelance and client project payments",
+            "id": "acc_003",
+            "name": "Wise Business Account",
+            "color": "#2A9DF4",
+            "total_income": 200000,
+            "total_expense": 100000
+        }
+    ]
+}
