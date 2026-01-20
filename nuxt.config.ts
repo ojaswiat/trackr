@@ -13,6 +13,7 @@ export default defineNuxtConfig({
         "nuxt-charts",
         "@pinia/nuxt",
         "@nuxtjs/supabase",
+        "nuxt-ssr-api-logger",
     ],
 
     imports: {

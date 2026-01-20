@@ -1,5 +1,7 @@
-import type { TAccount, TUser } from "~~/shared/types/entity.types";
+import type { TUser } from "~~/shared/types/entity.types";
+import process from "node:process";
 import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
+
 import {
     checkAccountBelongsToUser,
     checkAccountExist,
@@ -9,6 +11,8 @@ import {
 import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
 
 export default defineEventHandler(async (event) => {
+    const dev = process.env.NODE_ENV === "development";
+
     try {
         const query = getQuery(event);
         const user = event.context.user as TUser;
@@ -58,7 +62,10 @@ export default defineEventHandler(async (event) => {
             };
         }
     } catch (error) {
-        console.error(error);
+        if (dev) {
+            console.error(error);
+        }
+
         throw createError({
             statusCode: SERVER_STATUS_CODES.INTERNAL_SERVER_ERROR,
             statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.INTERNAL_SERVER_ERROR],
