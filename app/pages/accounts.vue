@@ -58,6 +58,7 @@
                 <AccountDeleteForm
                     v-model:open="showDeleteAccountModal"
                     :account="selectedAccountItem"
+                    @update="() => refreshAccounts()"
                 />
             </template>
         </UModal>
