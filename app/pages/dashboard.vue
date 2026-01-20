@@ -33,6 +33,7 @@ import type { DateValue } from "@internationalized/date";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { find } from "lodash-es";
 import { ACCOUNTS_FETCH } from "~~/shared/constants/api.const";
+import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 
 definePageMeta({
     title: "Dashboard",
@@ -47,7 +48,7 @@ useHead({
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 
 // TODO: default to all
-const selectedAccount = ref<string>("acc_000");
+const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
 
 const selectedDateRange = ref<{ start: DateValue; end: DateValue }>({
     start: today(getLocalTimeZone()).subtract({ months: 1 }),

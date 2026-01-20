@@ -2,8 +2,8 @@
 export const API_ACCOUNTS = "/api/accounts";
 export const ACCOUNTS_FETCH = `${API_ACCOUNTS}/fetch`;
 export const ACCOUNTS_ADD = `${API_ACCOUNTS}/add`;
-export const ACCOUNTS_EDIT = `${API_ACCOUNTS}/edit`;
-export const ACCOUNTS_REMOVE = `${API_ACCOUNTS}/remove`;
+export const ACCOUNTS_EDIT = `${API_ACCOUNTS}/update`;
+export const ACCOUNTS_REMOVE = `${API_ACCOUNTS}/delete`;
 
 // Categories
 export const CATEGORIES_FETCH = "/api/categories/fetch";

@@ -2,6 +2,7 @@ import type { TAccount } from "~~/shared/types/entity.types";
 import { and, eq, sql, sum } from "drizzle-orm";
 import { map, reduce } from "lodash-es";
 import { db } from "~~/server/utils/db";
+import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { accounts, transactions } from "~~/shared/db/schema";
 
@@ -89,11 +90,11 @@ export async function getAllAccountsForUser(userId: string): Promise<TAccount[]>
     }));
 
     const allAccountsSummary: TAccount = {
-        id: "acc_000",
+        id: DEFAULT_ALL_ACCOUNT_ID,
         name: "All Accounts",
         description: "Combined view of all accounts",
         color: "#333333",
-        initial_balance: 0,
+        initial_balance: reduce(accountsWithTotals, (acc, curr) => acc + (curr.initial_balance ?? 0), 0),
         total_income: reduce(accountsWithTotals, (acc, curr) => acc + (curr.total_income ?? 0), 0),
         total_expense: reduce(accountsWithTotals, (acc, curr) => acc + (curr.total_expense ?? 0), 0),
     };
@@ -140,4 +141,39 @@ export async function addAccountForUser(
         total_income: 0,
         total_expense: 0,
     };
+}
+
+export async function updateAccountForUser(
+    userId: string,
+    payload: {
+        id: string;
+        name: string;
+        initial_balance: number;
+        color: string;
+        description?: string;
+    },
+): Promise<TAccount> {
+    await db
+        .update(accounts)
+        .set({
+            name: payload.name,
+            description: payload.description || "",
+            color: payload.color,
+            initial_balance: String(payload.initial_balance),
+        })
+        .where(and(eq(accounts.id, payload.id), eq(accounts.user_id, userId)));
+
+    return getAccountDetails(payload.id);
+}
+
+export async function deleteAccountForUser(userId: string, accountId: string, keepTransactions: boolean): Promise<TAccount> {
+    const accountToDelete = await getAccountDetails(accountId);
+
+    if (!keepTransactions) {
+        await db.delete(transactions).where(eq(transactions.account_id, accountId));
+    }
+
+    await db.delete(accounts).where(and(eq(accounts.id, accountId), eq(accounts.user_id, userId)));
+
+    return accountToDelete;
 }

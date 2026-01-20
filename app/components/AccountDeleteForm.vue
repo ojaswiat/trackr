@@ -45,7 +45,9 @@
 
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
-import z from "zod";
+import type z from "zod";
+import { ACCOUNTS_REMOVE } from "~~/shared/constants/api.const";
+import { ZDeleteAccountSchema } from "~~/shared/schemas/zod.schema";
 
 const props = defineProps({
     account: {
@@ -54,15 +56,15 @@ const props = defineProps({
     },
 });
 
+const emits = defineEmits(["update"]);
+
 const toast = useToast();
 
 const open = defineModel<boolean>("open");
 
 const deleting = ref(false);
 
-const schema = z.object({
-    keep_transactions: z.boolean().default(true),
-});
+const schema = ZDeleteAccountSchema;
 type Schema = z.output<typeof schema>;
 
 const initialState = {
@@ -73,14 +75,23 @@ const state = ref(initialState);
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
     try {
+        if (!props.account?.id) {
+            return;
+        }
+
         deleting.value = true;
-        await sleep();
+
+        await $fetch(`${ACCOUNTS_REMOVE}/${props.account.id}`, {
+            method: "DELETE",
+            body: event.data,
+        });
 
         toast.add({ title: "Success", description: "Account deleted successfully!", color: "success" });
-        console.info(props.account?.id, event.data);
         open.value = false;
-    } catch (error) {
-        toast.add({ title: "Error", description: "Something went wrong! Please try again later.", color: "error" });
+        emits("update");
+    } catch (error: any) {
+        const message = error.response?._data?.message || error.message || "Something went wrong! Please try again later.";
+        toast.add({ title: "Error", description: message, color: "error" });
         console.error(error);
     } finally {
         deleting.value = false;

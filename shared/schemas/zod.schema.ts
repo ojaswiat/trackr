@@ -6,3 +6,9 @@ export const ZAddAccountSchema = z.object({
     color: z.string().min(1, "Please choose a color for this account"),
     description: z.string().max(60, "Description must be 60 characters or less").optional(),
 });
+
+export const ZEditAccountSchema = ZAddAccountSchema;
+
+export const ZDeleteAccountSchema = z.object({
+    keep_transactions: z.boolean().default(true),
+});

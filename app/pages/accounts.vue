@@ -17,7 +17,6 @@
         />
 
         <AccountDetails
-            v-if="!isEmpty(accounts)"
             class="px-4 mt-8"
             :account="selectedAccountItem"
             :summary="summary"
@@ -66,8 +65,9 @@
 </template>
 
 <script setup lang="ts">
-import { find, isEmpty } from "lodash-es";
+import { find } from "lodash-es";
 import { ACCOUNTS_FETCH } from "~~/shared/constants/api.const";
+import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 
 definePageMeta({
     title: "Accounts",
@@ -82,11 +82,11 @@ useHead({
 const { data: accountsAPIResponse, error: _accountsAPIError, refresh: refreshAccounts } = await useFetch(ACCOUNTS_FETCH);
 
 const accounts = computed(() => {
-    return (accountsAPIResponse.value as TAPIResponseSuccess<{ accounts: TAccount[] }>)?.data?.accounts?.slice(1) || [];
+    return (accountsAPIResponse.value as TAPIResponseSuccess<{ accounts: TAccount[] }>)?.data?.accounts || [];
 });
 
 const edit = ref(false);
-const selectedAccount = ref<string>("");
+const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
 
 const showAddAccountModal = ref<boolean>(false);
 const showDeleteAccountModal = ref<boolean>(false);
@@ -94,11 +94,18 @@ const showDeleteAccountModal = ref<boolean>(false);
 const selectedAccountItem = computed(() => {
     return find(accounts.value, (account) => account.id === selectedAccount.value);
 });
-// TODO: remove mock data
-const summary = computed(() => ({
-    total_income: (selectedAccountItem.value?.total_income ?? 0) + (selectedAccountItem.value?.initial_balance ?? 0),
-    total_expense: selectedAccountItem.value?.total_expense || 0,
-}));
+
+const summary = computed(() => {
+    const data = {
+        total_income: 0,
+        total_expense: 0,
+    };
+
+    data.total_income = (selectedAccountItem.value?.total_income ?? 0) + (selectedAccountItem.value?.initial_balance ?? 0);
+    data.total_expense = selectedAccountItem.value?.total_expense || 0;
+
+    return data;
+});
 
 function onEditAccount() {
     edit.value = true;

@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
+
 const props = defineProps({
     selectedAccount: {
         type: String,
@@ -31,7 +33,7 @@ const { data: categoryExpenseResponse, refresh: _refetch } = await useAsyncData(
         method: "POST",
         body: {
             filters: {
-                account_id: props.selectedAccount === "acc_000" ? [] : [props.selectedAccount],
+                account_id: props.selectedAccount === DEFAULT_ALL_ACCOUNT_ID ? [] : [props.selectedAccount],
             },
         },
     }),

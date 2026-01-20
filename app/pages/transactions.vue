@@ -27,6 +27,7 @@ import type { TTransactionType } from "~~/shared/constants/enums";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { filter } from "lodash-es";
 import { ACCOUNTS_FETCH, CATEGORIES_FETCH } from "~~/shared/constants/api.const";
+import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
 definePageMeta({
@@ -54,7 +55,7 @@ const accounts = computed(() => {
     return accountsResponse.value?.data?.accounts || [];
 });
 
-const selectedAccount = ref<string>("acc_000");
+const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
 const selectedCategory = ref<string>();
 const selectedType = ref<TTransactionType>(TRANSACTION_TYPE.EXPENSE);
 

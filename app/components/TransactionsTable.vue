@@ -5,7 +5,7 @@
                 All Transactions
             </h5>
             <p class="text-muted text-sm">
-                Showing transactions for {{ accountsMap[props.selectedAccount || "acc_000"]?.name }}
+                Showing transactions for {{ accountsMap[props.selectedAccount || DEFAULT_ALL_ACCOUNT_ID]?.name }}
             </p>
 
             <div class="h-[calc(100vh-28rem)] overflow-y-scroll mt-4">
@@ -63,6 +63,7 @@
 import type { TableColumn } from "@nuxt/ui";
 import type { Row } from "@tanstack/vue-table";
 import { find, map, reduce } from "lodash-es";
+import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
 const props = defineProps({
@@ -118,7 +119,7 @@ const { data: transactionsResponse } = await useAsyncData(
         method: "POST",
         body: {
             filters: {
-                account_id: props.selectedAccount === "acc_000" ? [] : [props.selectedAccount],
+                account_id: props.selectedAccount === DEFAULT_ALL_ACCOUNT_ID ? [] : [props.selectedAccount],
             },
         },
     }),

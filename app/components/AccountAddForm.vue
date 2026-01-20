@@ -92,7 +92,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type z from "zod";
-import { ACCOUNTS_ADD } from "~~/shared/constants/api.const";
+import { ACCOUNTS_ADD, ACCOUNTS_EDIT } from "~~/shared/constants/api.const";
 import { ZAddAccountSchema } from "~~/shared/schemas/zod.schema";
 
 const props = defineProps({
@@ -143,7 +143,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         adding.value = true;
 
         if (edit.value && props.account?.id) {
-        // Update account
+            // Update account
+            await $fetch(`${ACCOUNTS_EDIT}/${props.account.id}`, {
+                method: "PUT",
+                body: event.data,
+            });
             toast.add({ title: "Success", description: "Account updated successfully!", color: "success" });
         } else {
             // Add account
