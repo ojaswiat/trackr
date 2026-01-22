@@ -5,6 +5,7 @@ export type TUser = {
     first_name: string;
     last_name: string;
     email: string;
+    currency: string;
 };
 
 export type TAccount = {

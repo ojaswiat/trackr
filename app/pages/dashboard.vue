@@ -18,12 +18,12 @@
         />
 
         <div class="grid grid-cols-2 gap-4 px-4">
-            <CategoryExpenses :selected-account="selectedAccount" />
+            <CategoryExpenses :categories="categoryBreakdown" />
             <AccountSummary :accounts="accounts.slice(1)" />
         </div>
 
         <div class="px-4">
-            <TransactionRecentList :selected-account="selectedAccount" />
+            <TransactionRecentList :transactions="recentTransactions" />
         </div>
     </div>
 </template>
@@ -31,7 +31,6 @@
 <script setup lang="ts">
 import type { DateValue } from "@internationalized/date";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { find } from "lodash-es";
 import { ACCOUNTS_FETCH } from "~~/shared/constants/api.const";
 import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 
@@ -47,10 +46,9 @@ useHead({
 
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 
-// TODO: default to all
 const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
 
-const selectedDateRange = ref<{ start: DateValue; end: DateValue }>({
+const selectedDateRange = ref({
     start: today(getLocalTimeZone()).subtract({ months: 1 }),
     end: today(getLocalTimeZone()),
 });
@@ -59,13 +57,30 @@ const accounts = computed(() => {
     return accountsResponse.value?.data?.accounts || [];
 });
 
-const selectedAccountItem = computed(() => {
-    return find(accounts.value, (account) => account.id === selectedAccount.value) as TAccount;
+const { data: dashboardData } = await useAsyncData(
+    () => `dashboard-${selectedAccount.value}-${selectedDateRange.value.start}-${selectedDateRange.value.end}`,
+    () => $fetch("/api/dashboard/fetch", {
+        query: {
+            startDate: selectedDateRange.value.start.toString(),
+            endDate: selectedDateRange.value.end.toString(),
+            account_id: selectedAccount.value === DEFAULT_ALL_ACCOUNT_ID ? undefined : selectedAccount.value,
+        },
+    }),
+    { watch: [() => selectedAccount.value, () => selectedDateRange.value] },
+);
+
+const summary = computed(() => {
+    return {
+        total_income: dashboardData.value?.data?.monthlyOverview?.income || 0,
+        total_expense: dashboardData.value?.data?.monthlyOverview?.expense || 0,
+    };
 });
 
-// TODO: remove mock data
-const summary = computed(() => ({
-    total_income: selectedAccountItem.value?.total_income || 0,
-    total_expense: selectedAccountItem.value?.total_expense || 0,
-}));
+const recentTransactions = computed(() => {
+    return dashboardData.value?.data?.recentTransactions || [];
+});
+
+const categoryBreakdown = computed(() => {
+    return dashboardData.value?.data?.categoryBreakdown || [];
+});
 </script>

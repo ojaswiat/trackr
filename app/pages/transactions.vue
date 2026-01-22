@@ -18,11 +18,14 @@
             :selected-date-range="selectedDateRange"
             :transactions="transactions"
         />
+        <div
+            ref="sentinel"
+            class="h-10 w-full"></div>
     </div>
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from "@internationalized/date";
+import type { CalendarDate } from "@internationalized/date";
 import type { TTransactionType } from "~~/shared/constants/enums";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { filter, find, map, reduce } from "lodash-es";
@@ -42,18 +45,32 @@ useHead({
 
 const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
 const selectedCategory = ref<string>();
+const selectedType = ref<TTransactionType>(TRANSACTION_TYPE.EXPENSE);
+
+const selectedDateRange = ref({
+    start: today(getLocalTimeZone()).subtract({ months: 1 }),
+    end: today(getLocalTimeZone()),
+});
 
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 const { data: categoryResponse } = await useFetch(CATEGORIES_FETCH);
+
 const { data: transactionsResponse, pending: loading, refresh: refreshTransactions } = await useAsyncData(
-    () => `transactions-${selectedAccount.value}`, // Dynamic key for caching
+    () => `transactions-${selectedAccount.value}-${selectedCategory.value}-${selectedType.value}-${selectedDateRange.value.start}-${selectedDateRange.value.end}`,
     () => $fetch(TRANSACTIONS_FETCH, {
         method: "GET",
         query: {
-            account_id: selectedAccount.value === DEFAULT_ALL_ACCOUNT_ID ? undefined : selectedAccount,
+            account_id: selectedAccount.value === DEFAULT_ALL_ACCOUNT_ID ? undefined : selectedAccount.value,
+            category_id: selectedCategory.value,
+            type: selectedType.value,
+            startDate: selectedDateRange.value.start.toString(),
+            endDate: selectedDateRange.value.end.toString(),
+            limit: 20,
         },
     }),
-    { watch: [() => selectedAccount] },
+    {
+        watch: [selectedAccount, selectedCategory, selectedType, selectedDateRange],
+    },
 );
 
 const categories = computed(() => {
@@ -94,9 +111,13 @@ const selectedAccountName = computed(() => {
     return find(accounts.value, (account) => account.id === (selectedAccount.value ?? DEFAULT_ALL_ACCOUNT_ID))?.name ?? "";
 });
 
-const transactions = computed(() => {
-    const transactionsWithoutCategory = transactionsResponse.value?.data.transactions;
-    const transactionWithCategory = map(transactionsWithoutCategory, (transaction) => {
+const transactions = ref<TTransactionUI[]>([]);
+const cursor = ref<string | undefined>(undefined);
+const hasMore = ref(true);
+const sentinel = ref<HTMLElement | null>(null);
+
+function mapTransactions(rawTransactions: any[]) {
+    return map(rawTransactions, (transaction) => {
         const transactionCategory = categoriesMap.value[transaction.category_id];
         const transactionAccount = accountsMap.value[transaction.account_id];
 
@@ -107,19 +128,64 @@ const transactions = computed(() => {
             account_name: transactionAccount?.name,
             account_color: transactionAccount?.color,
         };
-    });
+    }) as TTransactionUI[];
+}
 
-    return transactionWithCategory as TTransactionUI[];
-});
+watch(transactionsResponse, (newVal) => {
+    if (newVal?.data) {
+        transactions.value = mapTransactions(newVal.data.transactions);
+        cursor.value = newVal.data.meta.next_cursor || undefined;
+        hasMore.value = newVal.data.meta.has_more;
+    }
+}, { immediate: true });
 
-const selectedType = ref<TTransactionType>(TRANSACTION_TYPE.EXPENSE);
+async function loadMore() {
+    if (!cursor.value || !hasMore.value || loading.value) {
+        return;
+    }
 
-const selectedDateRange = ref<{ start: DateValue; end: DateValue }>({
-    start: today(getLocalTimeZone()).subtract({ months: 1 }),
-    end: today(getLocalTimeZone()),
-});
+    try {
+        const res = await $fetch(TRANSACTIONS_FETCH, {
+            method: "GET",
+            query: {
+                account_id: selectedAccount.value === DEFAULT_ALL_ACCOUNT_ID ? undefined : selectedAccount.value,
+                category_id: selectedCategory.value,
+                type: selectedType.value,
+                startDate: selectedDateRange.value.start.toString(),
+                endDate: selectedDateRange.value.end.toString(),
+                limit: 20,
+                cursor: cursor.value,
+            },
+        });
+
+        if (res.data) {
+            const newTransactions = mapTransactions(res.data.transactions);
+            transactions.value.push(...newTransactions);
+            cursor.value = res.data.meta.next_cursor || undefined;
+            hasMore.value = res.data.meta.has_more;
+        }
+    } catch (e) {
+        console.error("Failed to load more transactions", e);
+    }
+}
+
+let observer: IntersectionObserver | null = null;
 
 onMounted(async () => {
-    await refreshTransactions();
+    // Initial refresh is handled by useAsyncData immediate
+    observer = new IntersectionObserver(([entry]) => {
+        if (entry && entry.isIntersecting) {
+            loadMore();
+        }
+    });
+    if (sentinel.value) {
+        observer.observe(sentinel.value);
+    }
+});
+
+onUnmounted(() => {
+    if (observer) {
+        observer.disconnect();
+    }
 });
 </script>

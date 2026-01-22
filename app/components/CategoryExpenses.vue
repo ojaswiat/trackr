@@ -12,36 +12,16 @@
 
         <CategoryExpensesChart
             class="mt-12"
-            :categories="categories"
+            :categories="props.categories"
         />
     </UCard>
 </template>
 
 <script setup lang="ts">
-import { CATEGORIES_EXPENSE_FETCH } from "~~/shared/constants/api.const";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
-
 const props = defineProps({
-    selectedAccount: {
-        type: String,
+    categories: {
+        type: Array as PropType<TCategory[]>,
         required: true,
     },
-});
-
-const { data: categoryExpenseResponse, refresh: _refetch } = await useAsyncData(
-    () => `cat-exp-${props.selectedAccount}`, // Dynamic key for caching
-    () => $fetch(CATEGORIES_EXPENSE_FETCH, {
-        method: "POST",
-        body: {
-            filters: {
-                account_id: props.selectedAccount === DEFAULT_ALL_ACCOUNT_ID ? [] : [props.selectedAccount],
-            },
-        },
-    }),
-    { watch: [() => props.selectedAccount] },
-);
-
-const categories = computed<TCategory[]>(() => {
-    return categoryExpenseResponse.value?.data.categories ?? [];
 });
 </script>

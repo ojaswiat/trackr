@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from "@internationalized/date";
+import type { CalendarDate } from "@internationalized/date";
 import { DateFormatter, getLocalTimeZone, today } from "@internationalized/date";
 
 const props = defineProps({
@@ -46,7 +46,7 @@ const props = defineProps({
 const emits = defineEmits(["refresh"]);
 
 const selectedAccount = defineModel<string>("selectedAccount");
-const selectedDateRange = defineModel<{ start: DateValue; end: DateValue }>("selectedDateRange", {
+const selectedDateRange = defineModel<any>("selectedDateRange", {
     default: {
         start: today(getLocalTimeZone()).subtract({ months: 1 }),
         end: today(getLocalTimeZone()),

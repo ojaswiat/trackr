@@ -1,39 +1,29 @@
-import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
-import { getCategoryStatistics } from "~~/server/handlers/category.handler";
-import { isDev } from "~~/server/utils/api.utils";
-import { CATEGORY_TYPE, SERVER_STATUS_CODES } from "~~/shared/constants/enums";
 import type { TUser } from "~~/shared/types/entity.types";
-
-type TRequestBody = {
-    filters?: {
-        account_id?: string[];
-    };
-};
+import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
+import { deleteUser } from "~~/server/handlers/user.handler";
+import { isDev } from "~~/server/utils/api.utils";
+import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
 
 export default defineEventHandler(async (event) => {
     const dev = isDev();
+
     try {
         const user = event.context.user as TUser;
-        const body = (await readBody(event)) as TRequestBody;
-        const accountIds = body.filters?.account_id ?? [];
+        await deleteUser(user.id);
 
-        const allCategories = await getCategoryStatistics(user.id, accountIds);
-
-        // Filter for EXPENSE type
-        const categories = allCategories.filter((c) => c.type === CATEGORY_TYPE.EXPENSE);
+        // Ideally we should also clear the session/cookie here
+        deleteCookie(event, "access_token");
 
         return {
             statusCode: SERVER_STATUS_CODES.OK,
             statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.OK],
-            message: "Category expenses fetched successfully",
-            data: {
-                categories,
-            },
+            message: "User account deleted successfully",
         };
     } catch (error) {
         if (dev) {
             console.error(error);
         }
+
         throw createError({
             statusCode: SERVER_STATUS_CODES.INTERNAL_SERVER_ERROR,
             statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.INTERNAL_SERVER_ERROR],

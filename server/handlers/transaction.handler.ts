@@ -1,5 +1,5 @@
 import type { TTransaction } from "~~/shared/types/entity.types";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, lt, lte } from "drizzle-orm";
 import { db } from "~~/server/utils/db";
 import { transactions } from "~~/shared/db/schema";
 
@@ -48,7 +48,14 @@ export async function getTransactionDetails(transactionId: string): Promise<TTra
     };
 }
 
-export async function getAllTransactionsForUser(userId: string, filters?: { account_id?: string }): Promise<TTransaction[]> {
+export async function getAllTransactionsForUser(
+    userId: string,
+    filters?: { account_id?: string; startDate?: Date; endDate?: Date },
+    options?: { limit?: number; cursor?: string },
+): Promise<{ data: TTransaction[]; meta: { next_cursor: string | null; has_more: boolean } }> {
+    const limit = options?.limit ?? 20;
+    const cursor = options?.cursor;
+
     const conditions = [];
 
     if (filters?.account_id) {
@@ -57,13 +64,31 @@ export async function getAllTransactionsForUser(userId: string, filters?: { acco
         conditions.push(eq(transactions.user_id, userId));
     }
 
+    if (filters?.startDate) {
+        conditions.push(gte(transactions.transaction_date, filters.startDate));
+    }
+
+    if (filters?.endDate) {
+        conditions.push(lte(transactions.transaction_date, filters.endDate));
+    }
+
+    if (cursor) {
+        conditions.push(lt(transactions.transaction_date, new Date(cursor)));
+    }
+
     const result = await db
         .select()
         .from(transactions)
         .where(and(...conditions))
-        .orderBy(desc(transactions.transaction_date));
+        .orderBy(desc(transactions.transaction_date))
+        .limit(limit + 1);
 
-    return result.map((t) => ({
+    const hasMore = result.length > limit;
+    const data = hasMore ? result.slice(0, limit) : result;
+    const lastItem = data[data.length - 1];
+    const nextCursor = hasMore && lastItem ? lastItem.transaction_date.toISOString() : null;
+
+    const mappedData = data.map((t) => ({
         id: t.id,
         type: t.type as TTransaction["type"],
         category_id: t.category_id,
@@ -74,6 +99,14 @@ export async function getAllTransactionsForUser(userId: string, filters?: { acco
         created_at: t.created_at.toISOString(),
         updated_at: t.updated_at.toISOString(),
     }));
+
+    return {
+        data: mappedData,
+        meta: {
+            next_cursor: nextCursor,
+            has_more: hasMore,
+        },
+    };
 }
 
 export async function addTransactionForUser(

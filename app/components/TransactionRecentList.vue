@@ -8,7 +8,7 @@
         </p>
 
         <TransactionRecentItem
-            v-for="transaction in transactions"
+            v-for="transaction in props.transactions"
             :key="`transaction-recent-item-${transaction.id}`"
             :transaction="transaction"
         />
@@ -16,32 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { TRANSACTIONS_FETCH } from "~~/shared/constants/api.const";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
-
 const props = defineProps({
-    selectedAccount: {
-        type: String,
+    transactions: {
+        type: Array as PropType<TTransaction[]>,
         required: true,
     },
-});
-
-const { data: transactionsResponse, refresh: refreshTransactions } = await useAsyncData(
-    () => `transactions-${props.selectedAccount}`, // Dynamic key for caching
-    () => $fetch(TRANSACTIONS_FETCH, {
-        method: "GET",
-        query: {
-            account_id: props.selectedAccount === DEFAULT_ALL_ACCOUNT_ID ? undefined : props.selectedAccount,
-        },
-    }),
-    { watch: [() => props.selectedAccount] },
-);
-
-const transactions = computed(() => {
-    return (transactionsResponse.value?.data?.transactions?.slice(0, 5) || []) as TTransaction[];
-});
-
-onMounted(async () => {
-    await refreshTransactions();
 });
 </script>

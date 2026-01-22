@@ -108,7 +108,7 @@ export async function checkCanUserAddAccount(userId: string): Promise<boolean> {
         .from(accounts)
         .where(eq(accounts.user_id, userId));
 
-    return Number(existingAccountsCount[0].count) < 5;
+    return Number(existingAccountsCount[0]?.count ?? 0) < 5;
 }
 
 // create a function to add account for a user

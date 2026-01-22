@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from "@internationalized/date";
+import type { CalendarDate } from "@internationalized/date";
 import type { TTransactionType } from "~~/shared/constants/enums";
 import { map } from "lodash-es";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
@@ -72,7 +72,7 @@ const emits = defineEmits(["refresh"]);
 const selectedType = defineModel<TTransactionType>("selectedType");
 const selectedAccount = defineModel<string>("selectedAccount");
 const selectedCategory = defineModel<string>("selectedCategory");
-const selectedDateRange = defineModel<{ start: DateValue; end: DateValue }>("selectedDateRange");
+const selectedDateRange = defineModel<any>("selectedDateRange");
 
 const accountSelectOptions = computed(() => map(props.accounts, (account) => ({
     label: account.name,
