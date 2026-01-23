@@ -1,0 +1,74 @@
+{
+    "INR": {
+        "id": "INR",
+        "country": "India",
+        "symbol": "₹",
+        "flag": "🇮🇳"
+    },
+    "USD": {
+        "id": "USD",
+        "country": "United States",
+        "symbol": "$",
+        "flag": "🇺🇸"
+    },
+    "EUR": {
+        "id": "EUR",
+        "country": "Eurozone",
+        "symbol": "€",
+        "flag": "🇪🇺"
+    },
+    "GBP": {
+        "id": "GBP",
+        "country": "United Kingdom",
+        "symbol": "£",
+        "flag": "🇬🇧"
+    },
+    "JPY": {
+        "id": "JPY",
+        "country": "Japan",
+        "symbol": "¥",
+        "flag": "🇯🇵"
+    },
+    "CNY": {
+        "id": "CNY",
+        "country": "China",
+        "symbol": "¥",
+        "flag": "🇨🇳"
+    },
+    "AUD": {
+        "id": "AUD",
+        "country": "Australia",
+        "symbol": "$",
+        "flag": "🇦🇺"
+    },
+    "CAD": {
+        "id": "CAD",
+        "country": "Canada",
+        "symbol": "$",
+        "flag": "🇨🇦"
+    },
+    "CHF": {
+        "id": "CHF",
+        "country": "Switzerland",
+        "symbol": "CHF",
+        "flag": "🇨🇭"
+    },
+    "HKD": {
+        "id": "HKD",
+        "country": "Hong Kong",
+        "symbol": "$",
+        "flag": "🇭🇰"
+    },
+    "SGD": {
+        "id": "SGD",
+        "country": "Singapore",
+        "symbol": "$",
+        "flag": "🇸🇬"
+    },
+    "NZD": {
+        "id": "NZD",
+        "country": "New Zealand",
+        "symbol": "$",
+        "flag": "🇳🇿"
+    }
+}

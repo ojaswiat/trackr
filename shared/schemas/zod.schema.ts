@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { email, z } from "zod";
 import { TRANSACTION_TYPE } from "../constants/enums";
 
 export const ZAddAccountSchema = z.object({
@@ -53,3 +53,13 @@ export const ZAddTransactionSchema = z.object({
 });
 
 export const ZEditTransactionSchema = ZAddTransactionSchema;
+
+export const ZUserProfileSchema = z.object({
+    id: z.string(),
+    first_name: z.string().nullish(),
+    last_name: z.string().nullish(),
+    email: z.email(),
+    currency: z.string().default("GBP"),
+});
+
+export type TUserProfile = z.infer<typeof ZUserProfileSchema>;

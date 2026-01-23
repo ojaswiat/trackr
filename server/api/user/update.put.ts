@@ -17,9 +17,18 @@ export default defineEventHandler(async (event) => {
     try {
         const user = event.context.user as TUser;
         const body = await readBody(event);
-        const validatedBody = UpdateUserSchema.parse(body);
 
-        const updatedUser = await updateUser(user.id, validatedBody);
+        const validatedBody = UpdateUserSchema.safeParse(body);
+        if (!validatedBody.success) {
+            throw createError({
+                statusCode: SERVER_STATUS_CODES.BAD_REQUEST,
+                statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.BAD_REQUEST],
+                message: "Validation failed",
+                data: validatedBody.error.issues,
+            });
+        }
+
+        const updatedUser = await updateUser(user.id, validatedBody.data);
 
         return {
             statusCode: SERVER_STATUS_CODES.OK,
@@ -30,15 +39,6 @@ export default defineEventHandler(async (event) => {
     } catch (error) {
         if (dev) {
             console.error(error);
-        }
-
-        if (error instanceof z.ZodError) {
-            throw createError({
-                statusCode: SERVER_STATUS_CODES.BAD_REQUEST,
-                statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.BAD_REQUEST],
-                message: "Validation failed",
-                data: (error as z.ZodError).issues,
-            });
         }
 
         throw createError({

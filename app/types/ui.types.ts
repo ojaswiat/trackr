@@ -30,3 +30,10 @@ export type TAPIResponseError = {
     statusMessage: string;
     message: string;
 };
+
+export type TCurrency = {
+    id: string;
+    country: string;
+    symbol: string;
+    flag: string;
+};

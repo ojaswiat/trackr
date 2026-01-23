@@ -122,3 +122,7 @@ To ensure consistency, follow this pattern when adding new features:
 #### 5. Future Scalability (Optional)
 
 - [ ] **System Design Presentation**: Slides on scaling DB (sharding), caching (Redis), and CDN usage.
+
+Todo:
+
+1. Create a demo user with transactions and accounts for demo in the Supabase.

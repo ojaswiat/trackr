@@ -1,11 +1,11 @@
 <template>
     <div class="w-screen flex">
         <UISideNav
-            class="flex-shrink-0 w-64 pt-8 fixed top-0 left-0 z-9999"
+            class="flex-shrink-0 w-64 pt-8 sticky top-0 left-0 z-9999"
             :open="true"
             @on-add-transaction="showAddTransactionModal = true"
         />
-        <div class="pt-8 px-4 min-w-0 bg-neutral-100 dark:bg-neutral-900 pb-16">
+        <div class="pt-8 px-4 min-w-0 flex-grow-1 bg-neutral-100 dark:bg-neutral-900 pb-16">
             <UIPageHeader class="px-4 mb-4" />
             <slot></slot>
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-16 pb-4 h-screen sticky top-0 left-0 bg-white dark:bg-neutral-800">
+    <div class="flex flex-col gap-16 pb-4 h-screen bg-white dark:bg-neutral-800">
         <div class="flex gap-4 items-start text-primary px-8">
             <UIcon
                 name="i-lucide:book-text"

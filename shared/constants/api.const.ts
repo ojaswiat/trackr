@@ -16,3 +16,9 @@ export const TRANSACTIONS_FETCH = `${API_TRANSACTIONS}/fetch`;
 export const TRANSACTIONS_ADD = `${API_TRANSACTIONS}/add`;
 export const TRANSACTIONS_UPDATE = `${API_TRANSACTIONS}/update`;
 export const TRANSACTIONS_DELETE = `${API_TRANSACTIONS}/delete`;
+
+// Users
+export const API_USER = "/api/user";
+export const USER_FETCH = `${API_USER}/fetch`;
+export const USER_UPDATE = `${API_USER}/update`;
+export const USER_DELETE = `${API_USER}/delete`;
