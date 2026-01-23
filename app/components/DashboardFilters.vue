@@ -9,6 +9,7 @@
                 v-model="selectedAccount"
                 class="w-xs"
                 :items="accountSelectOptions"
+                :disabled="props.loading"
                 placeholder="Select an account">
                 <template #item-leading="{ item }">
                     <div
@@ -18,13 +19,16 @@
                 </template>
             </USelect>
 
-            <UIDateFilter v-model:selected-date-range="selectedDateRange" />
+            <UIDateFilter
+                v-model:selected-date-range="selectedDateRange"
+                :loading="props.loading"
+            />
 
             <UButton
                 icon="lucide:refresh-ccw"
                 size="sm"
                 variant="outline"
-                :loading="loading"
+                :loading="props.loading"
                 @click="emits('refresh')">
                 Refresh
             </UButton>
@@ -33,12 +37,15 @@
 </template>
 
 <script setup lang="ts">
-import type { CalendarDate } from "@internationalized/date";
 import { DateFormatter, getLocalTimeZone, today } from "@internationalized/date";
 
 const props = defineProps({
     accounts: {
         type: Object as PropType<TAccount[]>,
+        required: true,
+    },
+    loading: {
+        type: Boolean,
         required: true,
     },
 });
@@ -58,8 +65,6 @@ const accountSelectOptions = computed(() => props.accounts.map((account) => ({
     value: account.id,
     color: account.color,
 })));
-
-const loading = ref<boolean>(false);
 
 const df = new DateFormatter("en-GB", {
     dateStyle: "medium",

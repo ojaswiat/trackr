@@ -22,3 +22,6 @@ export const API_USER = "/api/user";
 export const USER_FETCH = `${API_USER}/fetch`;
 export const USER_UPDATE = `${API_USER}/update`;
 export const USER_DELETE = `${API_USER}/delete`;
+
+// Others
+export const DASHBOARD_FETCH = "/api/dashboard/fetch";

@@ -5,6 +5,8 @@
             v-model:selected-date-range="selectedDateRange"
             class="px-4"
             :accounts="accounts"
+            :loading="loading"
+            @refresh="refreshDashboardData"
         />
 
         <DashboardSummary
@@ -29,9 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from "@internationalized/date";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { ACCOUNTS_FETCH } from "~~/shared/constants/api.const";
+import { ACCOUNTS_FETCH, DASHBOARD_FETCH } from "~~/shared/constants/api.const";
 import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 
 definePageMeta({
@@ -57,9 +58,9 @@ const accounts = computed(() => {
     return accountsResponse.value?.data?.accounts || [];
 });
 
-const { data: dashboardData } = await useAsyncData(
+const { data: dashboardData, pending: loading, refresh: refreshDashboardData } = await useAsyncData(
     () => `dashboard-${selectedAccount.value}-${selectedDateRange.value.start}-${selectedDateRange.value.end}`,
-    () => $fetch("/api/dashboard/fetch", {
+    () => $fetch(DASHBOARD_FETCH, {
         query: {
             startDate: selectedDateRange.value.start.toString(),
             endDate: selectedDateRange.value.end.toString(),
@@ -82,5 +83,9 @@ const recentTransactions = computed(() => {
 
 const categoryBreakdown = computed(() => {
     return dashboardData.value?.data?.categoryBreakdown || [];
+});
+
+onMounted(async () => {
+    await refreshDashboardData();
 });
 </script>

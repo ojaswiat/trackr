@@ -1,6 +1,8 @@
 <template>
     <div class="flex flex-wrap gap-4 items-end">
-        <p>Filter by</p>
+        <p>
+            Data between {{ df.format(selectedDateRange.start?.toDate(getLocalTimeZone())) }} - {{ df.format(selectedDateRange.end?.toDate(getLocalTimeZone())) }}
+        </p>
         <USelect
             v-model="selectedType"
             class="w-40 ml-auto"
@@ -33,7 +35,10 @@
             </template>
         </USelect>
 
-        <UIDateFilter v-model:selected-date-range="selectedDateRange" />
+        <UIDateFilter
+            v-model:selected-date-range="selectedDateRange"
+            :loading="props.loading"
+        />
 
         <UButton
             icon="lucide:refresh-ccw"
@@ -47,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import type { CalendarDate } from "@internationalized/date";
 import type { TTransactionType } from "~~/shared/constants/enums";
+import { DateFormatter, getLocalTimeZone } from "@internationalized/date";
 import { map } from "lodash-es";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
@@ -109,4 +114,8 @@ const typeSelectOptions = ref([
         },
     },
 ]);
+
+const df = new DateFormatter("en-GB", {
+    dateStyle: "medium",
+});
 </script>

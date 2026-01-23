@@ -87,7 +87,7 @@ export const transactions = pgTable("transactions", {
     index("transaction_account_id_idx").on(table.account_id),
     index("transaction_user_id_idx").on(table.user_id),
     index("transaction_type_idx").on(table.type),
-    index("transaction_created_at_idx").on(table.created_at),
+    index("transaction_transaction_date_idx").on(table.transaction_date),
     check(
         "transactions_type_valid", // constraint name
         sql`${table.type} IN (0, 1)`, // condition

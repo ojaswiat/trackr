@@ -1,5 +1,5 @@
 import type { TServerStatusCode } from "~~/shared/constants/enums";
-import { API_ACCOUNTS, API_TRANSACTIONS, API_USER, CATEGORIES_FETCH } from "~~/shared/constants/api.const";
+import { API_ACCOUNTS, API_TRANSACTIONS, API_USER, CATEGORIES_FETCH, DASHBOARD_FETCH } from "~~/shared/constants/api.const";
 import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
 
 export const STATUS_CODE_MESSAGE_MAP: Record<TServerStatusCode, string> = {
@@ -17,4 +17,5 @@ export const PROTECTED_ROUTES = [
     CATEGORIES_FETCH,
     API_TRANSACTIONS,
     API_USER,
+    DASHBOARD_FETCH,
 ];

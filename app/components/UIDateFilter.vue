@@ -3,7 +3,8 @@
         <UButton
             color="neutral"
             variant="outline"
-            icon="i-lucide-calendar">
+            icon="i-lucide-calendar"
+            :disabled="props.loading">
             <template v-if="selectedDateRange.start">
                 <template v-if="selectedDateRange.end">
                     {{ df.format(selectedDateRange.start.toDate(getLocalTimeZone())) }} - {{ df.format(selectedDateRange.end.toDate(getLocalTimeZone())) }}
@@ -25,6 +26,7 @@
                 :number-of-months="2"
                 :min-value="minDate"
                 :max-value="maxDate"
+                :maximum-days="30"
                 range
             />
         </template>
@@ -32,14 +34,20 @@
 </template>
 
 <script setup lang="ts">
-import type { CalendarDate } from "@internationalized/date";
 import { DateFormatter, getLocalTimeZone, today } from "@internationalized/date";
+
+const props = defineProps({
+    loading: {
+        type: Boolean,
+        required: true,
+    },
+});
 
 const df = new DateFormatter("en-GB", {
     dateStyle: "medium",
 });
 
-const selectedDateRange = defineModel<any>("selectedDateRange", {
+const selectedDateRange = defineModel("selectedDateRange", {
     default: {
         start: today(getLocalTimeZone()).subtract({ months: 1 }),
         end: today(getLocalTimeZone()),

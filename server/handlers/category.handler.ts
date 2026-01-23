@@ -4,7 +4,7 @@ import { and, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { filter, map } from "lodash-es";
 import { db } from "~~/server/utils/db";
 import { DEFAULT_ALL_CATEGORY_ID } from "~~/shared/constants/data.const";
-import { CATEGORY_TYPE } from "~~/shared/constants/enums";
+import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { categories, transactions } from "~~/shared/db/schema";
 
 export async function getAllCategories(): Promise<TCategory[]> {
@@ -36,22 +36,36 @@ export async function getAllCategories(): Promise<TCategory[]> {
     ];
 }
 
-export async function getCategoryStatistics(userId: string, accountIds?: string[], filters?: { startDate?: Date; endDate?: Date }): Promise<TCategory[]> {
-    const conditions = [
-        eq(categories.id, transactions.category_id),
+export async function getCategoryStatistics(
+    userId: string,
+    accountIds?: string[],
+    filters?: { startDate?: Date; endDate?: Date },
+): Promise<TCategory[]> {
+    const txConditions = [
         eq(transactions.user_id, userId),
+        eq(transactions.type, TRANSACTION_TYPE.EXPENSE),
     ];
 
     if (accountIds && accountIds.length > 0) {
-        conditions.push(inArray(transactions.account_id, accountIds));
+        txConditions.push(inArray(transactions.account_id, accountIds));
     }
 
     if (filters?.startDate) {
-        conditions.push(gte(transactions.transaction_date, filters.startDate));
+        txConditions.push(gte(transactions.transaction_date, filters.startDate));
     }
     if (filters?.endDate) {
-        conditions.push(lte(transactions.transaction_date, filters.endDate));
+        txConditions.push(lte(transactions.transaction_date, filters.endDate));
     }
+
+    const sq = db
+        .select({
+            category_id: transactions.category_id,
+            total: sql<number>`sum(${transactions.amount})`.as("total"),
+        })
+        .from(transactions)
+        .where(and(...txConditions))
+        .groupBy(transactions.category_id)
+        .as("sq");
 
     const result = await db
         .select({
@@ -60,15 +74,11 @@ export async function getCategoryStatistics(userId: string, accountIds?: string[
             description: categories.description,
             color: categories.color,
             type: categories.type,
-            total_amount: sql<number>`COALESCE(SUM(${transactions.amount}), 0)`,
+            total_amount: sql<number>`COALESCE(${sq.total}, 0)`,
         })
         .from(categories)
-        .leftJoin(
-            transactions,
-            and(...conditions),
-        )
-        .where(eq(categories.type, CATEGORY_TYPE.EXPENSE))
-        .groupBy(categories.id);
+        .leftJoin(sq, eq(categories.id, sq.category_id))
+        .where(eq(categories.type, CATEGORY_TYPE.EXPENSE));
 
     return result.map((c) => ({
         id: c.id,

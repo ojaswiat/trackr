@@ -63,3 +63,15 @@ export const ZUserProfileSchema = z.object({
 });
 
 export type TUserProfile = z.infer<typeof ZUserProfileSchema>;
+
+export const ZDashboardFilterSchema = z.object({
+    startDate: z.string().optional().refine((date) => !date || !Number.isNaN(Date.parse(date)), {
+        message: "Invalid start date format",
+    }),
+    endDate: z.string().optional().refine((date) => !date || !Number.isNaN(Date.parse(date)), {
+        message: "Invalid end date format",
+    }),
+    account_id: z.string().optional(),
+});
+
+export type TDashboardFilter = z.infer<typeof ZDashboardFilterSchema>;

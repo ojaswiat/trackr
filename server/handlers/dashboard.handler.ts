@@ -53,6 +53,7 @@ export async function getDashboardData(userId: string, filters?: { startDate?: D
 
     // 2. Period Overview (Default to current month if no filters)
     const now = new Date();
+    // Use transaction_date for period filtering
     const startOfPeriod = filters?.startDate ?? new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfPeriod = filters?.endDate ?? new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
@@ -98,23 +99,14 @@ export async function getDashboardData(userId: string, filters?: { startDate?: D
         recentActivityConditions.push(inArray(transactions.account_id, filters.accountIds));
     }
 
+    // Get recent transactions irrespective or the account selected
     const recentTransactions = await db
         .select()
         .from(transactions)
-        .where(and(...recentActivityConditions))
         .orderBy(desc(transactions.transaction_date))
         .limit(5);
 
-    // 4. Category Breakdown
-    // We need to pass filters to getCategoryStatistics, but we haven't updated it yet.
-    // Let's assume we will update it to accept date range.
-    // For now, we'll implement it here or update getCategoryStatistics separately.
-    // The requirement says "Action: Add startDate and endDate parameters to dashboard and transactions handlers."
-    // It doesn't explicitly mention category handler, but dashboard calls it.
-    // I should check category.handler.ts.
-
-    // Let's hold on updating category.handler.ts call for a moment and check it.
-    const categoryStats = await getCategoryStatistics(userId, filters?.accountIds, { startDate: filters?.startDate, endDate: filters?.endDate });
+    const categoryStats = await getCategoryStatistics(userId, filters?.accountIds, { startDate: startOfPeriod, endDate: endOfPeriod });
 
     return {
         netWorth,

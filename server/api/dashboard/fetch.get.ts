@@ -3,6 +3,7 @@ import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
 import { getDashboardData } from "~~/server/handlers/dashboard.handler";
 import { isDev } from "~~/server/utils/api.utils";
 import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
+import { ZDashboardFilterSchema } from "~~/shared/schemas/zod.schema";
 
 export default defineEventHandler(async (event) => {
     const dev = isDev();
@@ -12,9 +13,21 @@ export default defineEventHandler(async (event) => {
         const { id: userId } = user;
 
         const query = getQuery(event);
-        const startDate = query.startDate ? new Date(String(query.startDate)) : undefined;
-        const endDate = query.endDate ? new Date(String(query.endDate)) : undefined;
-        const account_id = query.account_id ? String(query.account_id) : undefined;
+        const validatedQuery = ZDashboardFilterSchema.safeParse(query);
+
+        if (!validatedQuery.success) {
+            throw createError({
+                statusCode: SERVER_STATUS_CODES.BAD_REQUEST,
+                statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.BAD_REQUEST],
+                message: "Invalid query parameters",
+                data: validatedQuery.error.issues,
+            });
+        }
+
+        const { startDate: startDateStr, endDate: endDateStr, account_id } = validatedQuery.data;
+
+        const startDate = startDateStr ? new Date(startDateStr) : undefined;
+        const endDate = endDateStr ? new Date(endDateStr) : undefined;
         const accountIds = account_id ? [account_id] : undefined;
 
         const dashboardData = await getDashboardData(userId, { startDate, endDate, accountIds });
@@ -25,7 +38,7 @@ export default defineEventHandler(async (event) => {
             message: "Dashboard data fetched successfully",
             data: dashboardData,
         };
-    } catch (error) {
+    } catch (error: any) {
         if (dev) {
             console.error(error);
         }

@@ -1,8 +1,8 @@
+import type { TUser } from "~~/shared/types/entity.types";
 import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
 import { getCategoryStatistics } from "~~/server/handlers/category.handler";
 import { isDev } from "~~/server/utils/api.utils";
 import { CATEGORY_TYPE, SERVER_STATUS_CODES } from "~~/shared/constants/enums";
-import type { TUser } from "~~/shared/types/entity.types";
 
 type TRequestBody = {
     filters?: {
