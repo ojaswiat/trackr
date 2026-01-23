@@ -161,10 +161,17 @@ const { data: userResponse, pending: loadingUser } = await useFetch(USER_FETCH);
 
 const user = computed(() => (userResponse.value as TAPIResponseSuccess<TUserProfile>).data);
 
-const CURRENCY_OPTIONS = reduce(currencies, (accumulator, currency) => {
-    accumulator.push(currency);
+const CURRENCY_OPTIONS = reduce(currencies, (accumulator, currency, id) => {
+    const item = {
+        label: `${currency.flag} ${currency.id} (${currency.symbol}) - ${currency.country}`,
+        value: id,
+    };
+    accumulator.push(item);
     return accumulator;
-}, [] as TCurrency[]);
+}, [] as {
+    label: string;
+    value: string;
+}[]);
 
 const schema = ZUserProfileSchema;
 type Schema = z.output<typeof schema>;
