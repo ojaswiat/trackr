@@ -1,3 +1,4 @@
+import type { TUserProfile } from "~~/shared/schemas/zod.schema";
 import type { TUser } from "~~/shared/types/entity.types";
 import { eq } from "drizzle-orm";
 import { db } from "~~/server/utils/db";
@@ -24,18 +25,14 @@ export async function getUser(userId: string): Promise<TUser> {
 
 export async function updateUser(
     userId: string,
-    payload: {
-        first_name?: string;
-        last_name?: string;
-        currency?: string;
-    },
+    payload: TUserProfile,
 ): Promise<TUser> {
     const [updatedUser] = await db
         .update(users)
         .set({
             first_name: payload.first_name,
             last_name: payload.last_name,
-            currency: payload.currency,
+            currency: payload.currency ?? undefined,
         })
         .where(eq(users.id, userId))
         .returning();

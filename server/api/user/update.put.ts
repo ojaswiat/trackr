@@ -1,15 +1,9 @@
 import type { TUser } from "~~/shared/types/entity.types";
-import { z } from "zod";
 import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
 import { updateUser } from "~~/server/handlers/user.handler";
 import { isDev } from "~~/server/utils/api.utils";
 import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
-
-const UpdateUserSchema = z.object({
-    first_name: z.string().max(30).optional(),
-    last_name: z.string().max(30).optional(),
-    currency: z.string().length(3).optional(),
-});
+import { ZUserProfileSchema } from "~~/shared/schemas/zod.schema";
 
 export default defineEventHandler(async (event) => {
     const dev = isDev();
@@ -18,7 +12,7 @@ export default defineEventHandler(async (event) => {
         const user = event.context.user as TUser;
         const body = await readBody(event);
 
-        const validatedBody = UpdateUserSchema.safeParse(body);
+        const validatedBody = ZUserProfileSchema.safeParse(body);
         if (!validatedBody.success) {
             throw createError({
                 statusCode: SERVER_STATUS_CODES.BAD_REQUEST,

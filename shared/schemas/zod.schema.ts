@@ -59,7 +59,7 @@ export const ZUserProfileSchema = z.object({
     first_name: z.string().nullish(),
     last_name: z.string().nullish(),
     email: z.email(),
-    currency: z.string().default("GBP"),
+    currency: z.string().default("GBP").optional(),
 });
 
 export type TUserProfile = z.infer<typeof ZUserProfileSchema>;

@@ -6,3 +6,4 @@ Todo:
 4. Create a clear all / reset filters button.
 5. Create unfinished pages.
 6. Publish the app to google console by getting a domain name - don't do SEO
+7. Pagination and infinite scroll from client and server
