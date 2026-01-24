@@ -1,25 +1,23 @@
 <template>
-    <nav class="flex items-center gap-4 h-16 bg-primary p-4">
+    <nav class="flex items-center gap-4 h-16 bg-slate-100 dark:bg-slate-800 p-4">
         <div class="w-10">
             <!-- placeholder for logo -->
         </div>
 
         <UButton
             v-if="isLoggedIn"
-            class="ml-auto bg-transparent border-2 border-white text-white cursor-pointer"
-            variant="outline"
+            class="ml-auto"
             @click="logout">
             <span class="font-semibold">Sign Out</span>
         </UButton>
         <UButton
             v-else
-            class="ml-auto bg-transparent border-2 border-white text-white cursor-pointer"
-            variant="outline"
+            class="ml-auto"
             @click="login">
             <span class="font-semibold">Sign In</span>
         </UButton>
 
-        <UColorModeButton class="text-white cursor-pointer" />
+        <UColorModeButton class="cursor-pointer" />
     </nav>
 </template>
 
