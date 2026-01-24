@@ -47,7 +47,7 @@
             <USelect
                 v-model="state.currency"
                 class="w-full"
-                :items="CURRENCY_OPTIONS"
+                :items="userStore.CURRENCY_OPTIONS"
             />
         </UFormField>
 
@@ -67,10 +67,9 @@
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type z from "zod";
 import type { TUserProfile } from "~~/shared/schemas/zod.schema";
-import { cloneDeep, reduce } from "lodash-es";
-import currencies from "~~/data/currencies.json";
-import { USER_UPDATE } from "~~/shared/constants/api.const";
+import { cloneDeep } from "lodash-es";
 import { ZUserProfileSchema } from "~~/shared/schemas/zod.schema";
+import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
     user: {
@@ -83,27 +82,14 @@ const props = defineProps({
     },
 });
 
-const toast = useToast();
-const saving = ref(false);
-const deleting = ref(false);
-
-const CURRENCY_OPTIONS = reduce(currencies, (accumulator, currency, id) => {
-    const item = {
-        label: `${currency.flag} ${currency.id} (${currency.symbol}) - ${currency.country}`,
-        value: id,
-    };
-    accumulator.push(item);
-    return accumulator;
-}, [] as {
-    label: string;
-    value: string;
-}[]);
+const userStore = useUserStore();
+const { updating } = storeToRefs(userStore);
 
 const schema = ZUserProfileSchema;
 type Schema = z.output<typeof schema>;
 
 const loading = computed(() => {
-    return saving.value || deleting.value || props.loading;
+    return updating.value || props.loading;
 });
 
 const initialState = ref<TUserProfile>({
@@ -126,26 +112,6 @@ const isSame = computed(() => {
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    try {
-        saving.value = true;
-
-        // Update profile
-        const response = await $fetch(USER_UPDATE, {
-            method: "PUT",
-            body: event.data,
-        });
-
-        toast.add({ title: "Success", description: "Profile updated successfully!", color: "success" });
-
-        state.value = cloneDeep(response as TAPIResponseSuccess<TUserProfile>).data;
-        initialState.value = cloneDeep(state.value);
-    } catch (e) {
-        const error = e as TAPIResponseError;
-        const message = error.message || "Something went wrong! Please try again later.";
-        toast.add({ title: "Error", description: message, color: "error" });
-        console.error(error);
-    } finally {
-        saving.value = false;
-    }
+    await userStore.updateUser(event.data);
 };
 </script>

@@ -7,6 +7,7 @@
                 </h2>
 
                 <UserProfileUpdateForm
+                    :key="userKey"
                     :user="user"
                     :loading="loadingUser"
                 />
@@ -77,8 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TUserProfile } from "~~/shared/schemas/zod.schema";
-import { USER_DELETE, USER_FETCH } from "~~/shared/constants/api.const";
+import useUserStore from "~/stores/UserStore";
 
 definePageMeta({
     title: "Profile",
@@ -90,47 +90,20 @@ useHead({
     title: "Profile",
 });
 
-const toast = useToast();
-const saving = ref(false);
-const deleting = ref(false);
-
-const { data: userResponse, pending: loadingUser } = await useFetch(USER_FETCH);
-
-const user = computed(() => (userResponse.value as TAPIResponseSuccess<TUserProfile>).data);
+const userStore = useUserStore();
+const { user, userKey, updating, deleting, loading: loadingUser } = storeToRefs(userStore);
 
 const loading = computed(() => {
-    return saving.value || deleting.value || loadingUser.value;
+    return updating.value || deleting.value || loadingUser.value;
 });
 
 const showDeleteUserModal = ref(false);
 
 async function deleteUser() {
-    try {
-        deleting.value = true;
-
-        await $fetch(USER_DELETE, {
-            method: "DELETE",
-        });
-
-        toast.add({
-            title: "Account Deleted",
-            description: "Your account has been deleted successfully.",
-            color: "success",
-        });
-
-        // Redirect to signin
-        await navigateTo(ROUTE_SIGNIN);
-    } catch (e) {
-        const error = e as TAPIResponseError;
-        const message = error.message || "Failed to delete account. Please try again.";
-        toast.add({
-            title: "Error",
-            description: message,
-            color: "error",
-        });
-        console.error(error);
-    } finally {
-        deleting.value = false;
-    }
+    await userStore.deleteUser();
 }
+
+onMounted(async () => {
+    await userStore.fetchUser();
+});
 </script>
