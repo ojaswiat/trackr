@@ -1,11 +1,8 @@
-import useUserStore from "~/stores/UserStore";
+import { APP_CONFIG } from "~~/shared/constants/config.const";
 
-export function useCurrencyFormatter(amount: number): string {
+export function useCurrencyFormatter(amount: number, currency?: string): string {
     const absAmount = Math.abs(amount);
     const sign = amount < 0 ? "-" : "";
-
-    const userStore = useUserStore();
-    const { currency } = storeToRefs(userStore);
 
     let value: number;
     let suffix: string;
@@ -32,11 +29,11 @@ export function useCurrencyFormatter(amount: number): string {
         suffix = "K";
     } else {
     // Less than 1000
-        return `${sign}${currency.value?.symbol ?? "£"}${absAmount.toFixed(2)}`;
+        return `${sign}${currency ?? APP_CONFIG.DEFAULT_CURRENCY_SYMBOL}${absAmount.toFixed(2)}`;
     }
 
     // Format with up to 2 decimal places, removing trailing zeros
     const formatted = Number.parseFloat(value.toFixed(2));
 
-    return `${sign}${currency.value?.symbol ?? "£"}${formatted}${suffix}`;
+    return `${sign}${currency ?? APP_CONFIG.DEFAULT_CURRENCY_SYMBOL}${formatted}${suffix}`;
 }

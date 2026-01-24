@@ -17,7 +17,9 @@
             <span class="font-semibold">Sign In</span>
         </UButton>
 
-        <UColorModeButton class="cursor-pointer" />
+        <ClientOnly>
+            <UColorModeButton class="cursor-pointer" />
+        </ClientOnly>
     </nav>
 </template>
 

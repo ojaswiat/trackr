@@ -9,7 +9,9 @@
             </p>
         </div>
 
-        <UColorModeButton class="w-fit cursor-pointer ml-auto" />
+        <ClientOnly>
+            <UColorModeButton class="w-fit cursor-pointer ml-auto" />
+        </ClientOnly>
     </header>
 </template>
 

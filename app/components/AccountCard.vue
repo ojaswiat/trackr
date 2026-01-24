@@ -40,19 +40,24 @@
                     (props.account.total_income ?? 0)
                         + (props.account.initial_balance)
                         - (props.account.total_expense ?? 0),
-                ) }}
+                    currency?.symbol) }}
             </div>
         </div>
     </UCard>
 </template>
 
 <script setup lang="ts">
+import useUserStore from "~/stores/UserStore";
+
 const props = defineProps({
     account: {
         type: Object as PropType<TAccount>,
         required: true,
     },
 });
+
+const userStore = useUserStore();
+const { currency } = storeToRefs(userStore);
 
 const selectedAccount = defineModel<string>("selectedAccount");
 

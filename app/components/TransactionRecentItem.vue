@@ -30,7 +30,7 @@
                     'text-primary-500': props.transaction.type === TRANSACTION_TYPE.INCOME,
                     'text-error-500': props.transaction.type === TRANSACTION_TYPE.EXPENSE,
                 }">
-                {{ props.transaction.type === TRANSACTION_TYPE.INCOME ? "+" : "-" }}{{ useCurrencyFormatter(props.transaction.amount) }}
+                {{ props.transaction.type === TRANSACTION_TYPE.INCOME ? "+" : "-" }}{{ useCurrencyFormatter(props.transaction.amount, currency?.symbol) }}
             </p>
         </div>
         <!-- </ClientOnly> -->
@@ -47,4 +47,7 @@ const props = defineProps({
         required: true,
     },
 });
+
+const userStore = useUserStore();
+const { currency } = storeToRefs(userStore);
 </script>

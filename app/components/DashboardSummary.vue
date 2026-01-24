@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <p class="text-2xl font-bold text-neutral-800">
-                    {{ useCurrencyFormatter(props.summary.total_income) }}
+                    {{ useCurrencyFormatter(props.summary.total_income, currency?.symbol) }}
                 </p>
             </div>
         </UCard>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <p class="text-2xl font-bold text-neutral-800">
-                    {{ useCurrencyFormatter(props.summary.total_expense) }}
+                    {{ useCurrencyFormatter(props.summary.total_expense, currency?.symbol) }}
                 </p>
             </div>
         </UCard>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <p class="text-2xl font-bold text-neutral-800">
-                    {{ useCurrencyFormatter(props.summary.total_income - props.summary.total_expense) }}
+                    {{ useCurrencyFormatter(props.summary.total_income - props.summary.total_expense, currency?.symbol) }}
                 </p>
             </div>
         </UCard>
@@ -60,10 +60,15 @@
 </template>
 
 <script setup lang="ts">
+import useUserStore from "~/stores/UserStore";
+
 const props = defineProps({
     summary: {
         type: Object as PropType<TAccountSummary>,
         required: true,
     },
 });
+
+const userStore = useUserStore();
+const { currency } = storeToRefs(userStore);
 </script>
