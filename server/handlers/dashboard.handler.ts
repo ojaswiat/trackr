@@ -103,6 +103,7 @@ export async function getDashboardData(userId: string, filters?: { startDate?: D
     const recentTransactions = await db
         .select()
         .from(transactions)
+        .where(eq(transactions.user_id, userId))
         .orderBy(desc(transactions.transaction_date))
         .limit(5);
 

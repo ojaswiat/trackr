@@ -56,7 +56,7 @@ export async function getAllTransactionsForUser(
     const limit = options?.limit ?? 20;
     const cursor = options?.cursor;
 
-    const conditions = [];
+    const conditions = [eq(transactions.user_id, userId)];
 
     if (filters?.account_id) {
         conditions.push(eq(transactions.account_id, filters.account_id));
@@ -81,7 +81,7 @@ export async function getAllTransactionsForUser(
         .from(transactions)
         .where(and(...conditions))
         .orderBy(desc(transactions.transaction_date))
-        .limit(limit + 1);
+        .limit(limit);
 
     const hasMore = result.length > limit;
     const data = hasMore ? result.slice(0, limit) : result;
