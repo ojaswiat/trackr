@@ -18,7 +18,6 @@ export default defineNuxtConfig({
 
     imports: {
         dirs: [
-            "composables",
             "constants",
             "stores",
             "types",
@@ -43,4 +42,6 @@ export default defineNuxtConfig({
             exclude: ["/", "/about"], // Add public pages here
         },
     },
+
+    // ssr: false,
 });

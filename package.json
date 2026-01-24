@@ -27,7 +27,7 @@
         "@vercel/analytics": "^1.6.1",
         "drizzle-orm": "1.0.0-beta.10-4a43a22",
         "lodash-es": "^4.17.22",
-        "nuxt": "^4.2.2",
+        "nuxt": "4.3.0",
         "nuxt-charts": "^2.0.0",
         "nuxt-ssr-api-logger": "2.0.2",
         "pinia": "^3.0.4",

@@ -38,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import useUserStore from "~/stores/UserStore";
 

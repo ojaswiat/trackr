@@ -100,14 +100,14 @@ const initialState = ref<TUserProfile>({
     currency: props.user.currency ?? undefined,
 });
 
-const state = reactive(cloneDeep(initialState));
+const state = reactive(cloneDeep(initialState.value));
 
 const isSame = computed(() => {
     return (
-        state.value.first_name === initialState.value.first_name
-        && state.value.last_name === initialState.value.last_name
-        && state.value.email === initialState.value.email
-        && state.value.currency === initialState.value.currency
+        state.first_name === initialState.value.first_name
+        && state.last_name === initialState.value.last_name
+        && state.email === initialState.value.email
+        && state.currency === initialState.value.currency
     );
 });
 

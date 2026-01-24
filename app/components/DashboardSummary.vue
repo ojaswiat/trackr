@@ -60,6 +60,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
