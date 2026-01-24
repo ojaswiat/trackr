@@ -1,23 +1,21 @@
 <template>
-    <ClientOnly>
-        <BarChart
-            :data="accountsData"
-            class="chart-styles"
-            :height="240"
-            :categories="amountTypeMultiple"
-            :y-axis="['income', 'expense']"
-            x-axis="name"
-            :group-padding="0"
-            :bar-padding="0.2"
-            :x-explicit-ticks="xExplicitTicks"
-            :radius="4"
-            :x-formatter="xFormatter"
-            :y-formatter="yFormatter"
-            :legend-position="LegendPosition.BottomCenter"
-            :hide-legend="false"
-            :y-grid-line="true"
-        />
-    </ClientOnly>
+    <BarChart
+        :data="accountsData"
+        class="chart-styles"
+        :height="240"
+        :categories="amountTypeMultiple"
+        :y-axis="['income', 'expense']"
+        x-axis="name"
+        :group-padding="0"
+        :bar-padding="0.2"
+        :x-explicit-ticks="xExplicitTicks"
+        :radius="4"
+        :x-formatter="xFormatter"
+        :y-formatter="yFormatter"
+        :legend-position="LegendPosition.BottomCenter"
+        :hide-legend="false"
+        :y-grid-line="true"
+    />
 </template>
 
 <script setup lang="ts">

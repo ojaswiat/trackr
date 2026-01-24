@@ -8,7 +8,7 @@
                 Showing transactions for {{ props.selectedAccountName }}
             </p>
 
-            <div class="h-[calc(100vh-28rem)] overflow-y-scroll mt-4">
+            <div class="h-[calc(100vh-24rem)] overflow-y-scroll mt-4">
                 <UTable
                     :columns="columns"
                     :column-visibility="columnVisibility"

@@ -22,7 +22,7 @@
                 </p>
             </div>
         </div>
-        <!-- <ClientOnly> -->
+
         <div>
             <p
                 class="font-semibold"
@@ -33,7 +33,6 @@
                 {{ props.transaction.type === TRANSACTION_TYPE.INCOME ? "+" : "-" }}{{ useCurrencyFormatter(props.transaction.amount, currency?.symbol) }}
             </p>
         </div>
-        <!-- </ClientOnly> -->
     </div>
 </template>
 

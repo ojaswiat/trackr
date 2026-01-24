@@ -1,5 +1,5 @@
 import type { TAccount } from "~~/shared/types/entity.types";
-import { and, eq, sql, sum } from "drizzle-orm";
+import { and, eq, gte, lte, sql, sum } from "drizzle-orm";
 import { map, reduce } from "lodash-es";
 import { db } from "~~/server/utils/db";
 import { APP_CONFIG } from "~~/shared/constants/config.const";
@@ -170,4 +170,74 @@ export async function deleteAccountForUser(userId: string, accountId: string, ke
     await db.delete(accounts).where(and(eq(accounts.id, accountId), eq(accounts.user_id, userId)));
 
     return accountToDelete;
+}
+
+export async function getAccountTransactionHistory(accountId: string): Promise<{
+    date: string;
+    income: number;
+    expense: number;
+}[]> {
+    // Get date range: last 30 days
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+
+    // Query transactions for this account in the last 30 days
+    const result = await db
+        .select({
+            transaction_date: transactions.transaction_date,
+            type: transactions.type,
+            amount: transactions.amount,
+        })
+        .from(transactions)
+        .where(
+            and(
+                eq(transactions.account_id, accountId),
+                gte(transactions.transaction_date, startDate),
+                lte(transactions.transaction_date, endDate),
+            ),
+        )
+        .orderBy(transactions.transaction_date);
+
+    // Group by date and aggregate income/expense
+    const groupedData = new Map<string, { income: number; expense: number }>();
+
+    result.forEach((tx) => {
+        const date = tx.transaction_date;
+        const dateKey = `${date.getDate().toString().padStart(2, "0")} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()]}`;
+
+        if (!groupedData.has(dateKey)) {
+            groupedData.set(dateKey, { income: 0, expense: 0 });
+        }
+
+        const data = groupedData.get(dateKey)!;
+        const amount = Number(tx.amount);
+
+        if (tx.type === TRANSACTION_TYPE.INCOME) {
+            data.income += amount;
+        } else if (tx.type === TRANSACTION_TYPE.EXPENSE) {
+            data.expense += amount;
+        }
+    });
+
+    // Convert to array format expected by the chart
+    // Fill in missing dates with zero values for continuity
+    const chartData: { date: string; income: number; expense: number }[] = [];
+    const currentDate = new Date(startDate);
+    const finalDate = new Date(endDate);
+
+    while (currentDate.getTime() <= finalDate.getTime()) {
+        const dateKey = `${currentDate.getDate().toString().padStart(2, "0")} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][currentDate.getMonth()]}`;
+
+        const data = groupedData.get(dateKey) || { income: 0, expense: 0 };
+        chartData.push({
+            date: dateKey,
+            income: Number(data.income.toFixed(2)),
+            expense: Number(data.expense.toFixed(2)),
+        });
+
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return chartData;
 }

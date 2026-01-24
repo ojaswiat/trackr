@@ -4,6 +4,7 @@ export const ACCOUNTS_FETCH = `${API_ACCOUNTS}/fetch`;
 export const ACCOUNTS_ADD = `${API_ACCOUNTS}/add`;
 export const ACCOUNTS_UPDATE = `${API_ACCOUNTS}/update`;
 export const ACCOUNTS_DELETE = `${API_ACCOUNTS}/delete`;
+export const ACCOUNTS_HISTORY = `${API_ACCOUNTS}/history`;
 
 // Categories
 export const API_CATEGORIES = "/api/categories";

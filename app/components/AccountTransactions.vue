@@ -9,8 +9,10 @@
             </p>
 
             <AccountTransactionsChart
-                v-if="!props.account?.id"
+                v-if="props.account?.id"
                 class="mt-12"
+                :chart-data="chartData"
+                :loading="loading"
             />
             <p
                 v-else
@@ -22,10 +24,50 @@
 </template>
 
 <script setup lang="ts">
+import { ACCOUNTS_HISTORY } from "~~/shared/constants/api.const";
+
 const props = defineProps({
     account: {
         type: Object as PropType<TAccount>,
         required: false,
     },
 });
+
+const chartData = ref<Array<{ date: string; income: number; expense: number }>>([]);
+const loading = ref(false);
+const error = ref(false);
+
+async function fetchTransactionHistory() {
+    if (!props.account?.id) {
+        return;
+    }
+
+    try {
+        loading.value = true;
+        error.value = false;
+
+        const response = await $fetch(`${ACCOUNTS_HISTORY}/${props.account.id}`, {
+            method: "GET",
+        });
+
+        chartData.value = (response as TAPIResponseSuccess<{ history: Array<{ date: string; income: number; expense: number }> }>).data.history;
+    } catch (e) {
+        console.error("Failed to fetch transaction history:", e);
+        error.value = true;
+        chartData.value = [];
+    } finally {
+        loading.value = false;
+    }
+}
+
+onMounted(async () => {
+    await fetchTransactionHistory();
+});
+
+// Watch for account changes and fetch data
+watch(() => props.account?.id, async (newAccountId) => {
+    if (newAccountId) {
+        await fetchTransactionHistory();
+    }
+}, { immediate: true });
 </script>

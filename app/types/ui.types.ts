@@ -37,3 +37,9 @@ export type TCurrency = {
     symbol: string;
     flag: string;
 };
+
+export type TAccountTransactionChartData = {
+    date: string;
+    income: number;
+    expense: number;
+};

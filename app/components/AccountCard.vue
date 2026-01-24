@@ -63,6 +63,11 @@ const { currency } = storeToRefs(userStore);
 const selectedAccount = defineModel<string>("selectedAccount");
 
 function handleAccountSelect(accountId: string) {
-    selectedAccount.value = accountId;
+    // Toggle if clicked on selected
+    if (selectedAccount.value === accountId) {
+        selectedAccount.value = undefined;
+    } else {
+        selectedAccount.value = accountId;
+    }
 }
 </script>
