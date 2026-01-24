@@ -26,7 +26,6 @@
                 :number-of-months="2"
                 :min-value="minDate"
                 :max-value="maxDate"
-                :maximum-days="30"
                 range
             />
         </template>

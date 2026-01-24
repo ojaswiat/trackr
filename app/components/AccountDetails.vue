@@ -6,7 +6,7 @@
                     {{ props.account?.name ?? 'Select an account' }}
                 </h5>
                 <AccountActions
-                    v-if="!isEmpty(props.account) && props.account.id !== DEFAULT_ALL_ACCOUNT_ID"
+                    v-if="props.account?.id"
                     @on-edit-account="emits('onEditAccount', props.account)"
                     @on-delete-account="emits('onDeleteAccount', props.account)"
                 />
@@ -23,9 +23,6 @@
 </template>
 
 <script setup lang="ts">
-import { isEmpty } from "lodash-es";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
-
 const props = defineProps({
     account: {
         type: Object as PropType<TAccount>,

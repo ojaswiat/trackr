@@ -9,7 +9,7 @@
             </p>
 
             <AccountTransactionsChart
-                v-if="props.account?.id !== DEFAULT_ALL_ACCOUNT_ID"
+                v-if="!props.account?.id"
                 class="mt-12"
             />
             <p
@@ -22,8 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
-
 const props = defineProps({
     account: {
         type: Object as PropType<TAccount>,

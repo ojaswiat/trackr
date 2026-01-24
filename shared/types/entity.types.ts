@@ -27,7 +27,7 @@ export type TCategory = {
     type: TCategoryType;
 
     // TODO: get this from group by query on transaction from DB
-    total_amount: number;
+    total_amount?: number;
 };
 
 export type TTransaction = {

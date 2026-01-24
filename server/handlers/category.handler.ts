@@ -1,24 +1,13 @@
 import type { TCategoryType } from "~~/shared/constants/enums";
 import type { TCategory } from "~~/shared/types/entity.types";
 import { and, eq, gte, inArray, lte, sql } from "drizzle-orm";
-import { map } from "lodash-es";
 import { db } from "~~/server/utils/db";
 import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { categories, transactions } from "~~/shared/db/schema";
 
 export async function getAllCategories(): Promise<TCategory[]> {
     const result = await db.select().from(categories);
-
-    const allCategories = map(result, (cat) => ({
-        id: cat.id,
-        name: cat.name,
-        description: cat.description || "",
-        color: cat.color,
-        type: cat.type as TCategoryType,
-        total_amount: 0,
-    }));
-
-    return allCategories;
+    return result as TCategory[];
 }
 
 export async function getCategoryStatistics(

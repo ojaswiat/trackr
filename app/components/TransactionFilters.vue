@@ -1,8 +1,16 @@
 <template>
     <div class="flex flex-wrap gap-4 items-end">
-        <p>
+        <p class="text-sm">
             Data between {{ df.format(selectedDateRange.start?.toDate(getLocalTimeZone())) }} - {{ df.format(selectedDateRange.end?.toDate(getLocalTimeZone())) }}
         </p>
+        <UButton
+            icon="lucide:refresh-ccw"
+            size="sm"
+            variant="outline"
+            :loading="props.loading"
+            @click="emits('refresh')">
+            Refresh
+        </UButton>
         <USelect
             v-model="selectedType"
             class="w-40 ml-auto"
@@ -39,23 +47,14 @@
             v-model:selected-date-range="selectedDateRange"
             :loading="props.loading"
         />
-
-        <UButton
-            icon="lucide:refresh-ccw"
-            size="sm"
-            variant="outline"
-            :loading="props.loading"
-            @click="emits('refresh')">
-            Refresh
-        </UButton>
     </div>
 </template>
 
 <script setup lang="ts">
 import type { TTransactionType } from "~~/shared/constants/enums";
 import { DateFormatter, getLocalTimeZone } from "@internationalized/date";
-import { map } from "lodash-es";
-import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
+import { filter, map } from "lodash-es";
+import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
 const props = defineProps({
     accounts: {
@@ -79,26 +78,31 @@ const selectedAccount = defineModel<string>("selectedAccount");
 const selectedCategory = defineModel<string>("selectedCategory");
 const selectedDateRange = defineModel<any>("selectedDateRange");
 
-const accountSelectOptions = computed(() => map(props.accounts, (account) => ({
-    label: account.name,
-    value: account.id,
-    color: account.color,
-})));
+const accountSelectOptions = computed(() => {
+    const accountOptions = map(props.accounts, (account) => {
+        return {
+            label: account.name,
+            value: account.id,
+            color: account.color,
+        };
+    });
 
-const categorySelectOptions = computed(() => map(props.categories, (category) => ({
-    label: category.name,
-    value: category.id,
-    color: category.color,
-})));
+    return accountOptions;
+});
+
+const categorySelectOptions = computed(() => {
+    const categoriesWithoutIncome = filter(props.categories, (category) => category.type !== CATEGORY_TYPE.INCOME);
+
+    const categoryOptions = map(categoriesWithoutIncome, (category) => ({
+        label: category.name,
+        value: category.id,
+        color: category.color,
+    }));
+
+    return categoryOptions;
+});
 
 const typeSelectOptions = ref([
-    {
-        label: "All",
-        value: undefined,
-        chip: {
-            color: "info" as const,
-        },
-    },
     {
         label: "Expense",
         value: TRANSACTION_TYPE.EXPENSE,

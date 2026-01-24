@@ -1,43 +1,41 @@
 <template>
     <div class="flex flex-wrap items-end justify-between gap-4 w-full">
-        <p>
+        <p class="text-sm">
             Data between {{ df.format(selectedDateRange.start?.toDate(getLocalTimeZone())) }} - {{ df.format(selectedDateRange.end?.toDate(getLocalTimeZone())) }}
         </p>
+        <UButton
+            icon="lucide:refresh-ccw"
+            size="sm"
+            variant="outline"
+            :loading="props.loading"
+            @click="emits('refresh')">
+            Refresh
+        </UButton>
 
-        <div class="flex flex-wrap gap-4 items-center">
-            <USelect
-                v-model="selectedAccount"
-                class="w-xs"
-                :items="accountSelectOptions"
-                :disabled="props.loading"
-                placeholder="Select an account">
-                <template #item-leading="{ item }">
-                    <div
-                        class="h-2 w-2 rounded-full mt-[6px] mr-2"
-                        :style="{ backgroundColor: item.color }">
-                    </div>
-                </template>
-            </USelect>
+        <USelect
+            v-model="selectedAccount"
+            class="w-xs ml-auto"
+            :items="accountSelectOptions"
+            :disabled="props.loading"
+            placeholder="Select an account">
+            <template #item-leading="{ item }">
+                <div
+                    class="h-2 w-2 rounded-full mt-[6px] mr-2"
+                    :style="{ backgroundColor: item.color }">
+                </div>
+            </template>
+        </USelect>
 
-            <UIDateFilter
-                v-model:selected-date-range="selectedDateRange"
-                :loading="props.loading"
-            />
-
-            <UButton
-                icon="lucide:refresh-ccw"
-                size="sm"
-                variant="outline"
-                :loading="props.loading"
-                @click="emits('refresh')">
-                Refresh
-            </UButton>
-        </div>
+        <UIDateFilter
+            v-model:selected-date-range="selectedDateRange"
+            :loading="props.loading"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, today } from "@internationalized/date";
+import { filter, map } from "lodash-es";
 
 const props = defineProps({
     accounts: {
@@ -60,11 +58,17 @@ const selectedDateRange = defineModel<any>("selectedDateRange", {
     },
 });
 
-const accountSelectOptions = computed(() => props.accounts.map((account) => ({
-    label: account.name,
-    value: account.id,
-    color: account.color,
-})));
+const accountSelectOptions = computed(() => {
+    const accountOptions = map(props.accounts, (account) => {
+        return {
+            label: account.name,
+            value: account.id,
+            color: account.color,
+        };
+    });
+
+    return accountOptions;
+});
 
 const df = new DateFormatter("en-GB", {
     dateStyle: "medium",

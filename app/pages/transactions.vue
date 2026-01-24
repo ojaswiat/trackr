@@ -26,8 +26,6 @@ import type { TTransactionType } from "~~/shared/constants/enums";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { find, map, reduce } from "lodash-es";
 import { ACCOUNTS_FETCH, CATEGORIES_FETCH, TRANSACTIONS_FETCH } from "~~/shared/constants/api.const";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
-import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 
 definePageMeta({
     title: "Transactions",
@@ -39,9 +37,9 @@ useHead({
     title: "Transactions",
 });
 
-const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
+const selectedAccount = ref<string>();
 const selectedCategory = ref<string>();
-const selectedType = ref<TTransactionType>(TRANSACTION_TYPE.EXPENSE);
+const selectedType = ref<TTransactionType>();
 
 const selectedDateRange = ref({
     start: today(getLocalTimeZone()).subtract({ months: 1 }),
@@ -56,7 +54,7 @@ const { data: transactionsResponse, pending: loading, refresh: refreshTransactio
     () => $fetch(TRANSACTIONS_FETCH, {
         method: "GET",
         query: {
-            account_id: selectedAccount.value === DEFAULT_ALL_ACCOUNT_ID ? undefined : selectedAccount.value,
+            account_id: selectedAccount.value,
             category_id: selectedCategory.value,
             type: selectedType.value,
             startDate: selectedDateRange.value.start.toString(),
@@ -99,7 +97,9 @@ const accountsMap = computed<Record<string, TAccount>>(() => {
 });
 
 const selectedAccountName = computed(() => {
-    return find(accounts.value, (account) => account.id === (selectedAccount.value ?? DEFAULT_ALL_ACCOUNT_ID))?.name ?? "";
+    const selectedAccountItem = find(accounts.value, (account) => account.id === selectedAccount.value);
+
+    return selectedAccountItem?.name ?? "";
 });
 
 function mapTransactions(rawTransactions: TTransaction[]) {

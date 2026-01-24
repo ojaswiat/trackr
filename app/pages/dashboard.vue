@@ -33,7 +33,6 @@
 <script setup lang="ts">
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { ACCOUNTS_FETCH, DASHBOARD_FETCH } from "~~/shared/constants/api.const";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 
 definePageMeta({
     title: "Dashboard",
@@ -47,7 +46,7 @@ useHead({
 
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 
-const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
+const selectedAccount = ref<string>();
 
 const selectedDateRange = ref({
     start: today(getLocalTimeZone()).subtract({ months: 1 }),
@@ -64,7 +63,7 @@ const { data: dashboardData, pending: loading, refresh: refreshDashboardData } =
         query: {
             startDate: selectedDateRange.value.start.toString(),
             endDate: selectedDateRange.value.end.toString(),
-            account_id: selectedAccount.value === DEFAULT_ALL_ACCOUNT_ID ? undefined : selectedAccount.value,
+            account_id: selectedAccount.value,
         },
     }),
     { watch: [() => selectedAccount.value, () => selectedDateRange.value] },

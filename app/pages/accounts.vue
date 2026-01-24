@@ -78,7 +78,6 @@
 <script setup lang="ts">
 import { find } from "lodash-es";
 import { ACCOUNTS_FETCH } from "~~/shared/constants/api.const";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 
 definePageMeta({
     title: "Accounts",
@@ -102,7 +101,7 @@ const accounts = computed(() => {
 });
 
 const edit = ref(false);
-const selectedAccount = ref<string>(DEFAULT_ALL_ACCOUNT_ID);
+const selectedAccount = ref<string>();
 
 const showAddAccountModal = ref<boolean>(false);
 const showDeleteAccountModal = ref<boolean>(false);

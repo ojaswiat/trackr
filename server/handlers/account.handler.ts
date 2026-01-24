@@ -2,7 +2,6 @@ import type { TAccount } from "~~/shared/types/entity.types";
 import { and, eq, sql, sum } from "drizzle-orm";
 import { map, reduce } from "lodash-es";
 import { db } from "~~/server/utils/db";
-import { DEFAULT_ALL_ACCOUNT_ID } from "~~/shared/constants/data.const";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { accounts, transactions } from "~~/shared/db/schema";
 
@@ -89,17 +88,7 @@ export async function getAllAccountsForUser(userId: string): Promise<TAccount[]>
         total_expense: Number(total_expense),
     }));
 
-    const allAccountsSummary: TAccount = {
-        id: DEFAULT_ALL_ACCOUNT_ID,
-        name: "All Accounts",
-        description: "Combined view of all accounts",
-        color: "#333333",
-        initial_balance: reduce(accountsWithTotals, (acc, curr) => acc + (curr.initial_balance ?? 0), 0),
-        total_income: reduce(accountsWithTotals, (acc, curr) => acc + (curr.total_income ?? 0), 0),
-        total_expense: reduce(accountsWithTotals, (acc, curr) => acc + (curr.total_expense ?? 0), 0),
-    };
-
-    return [allAccountsSummary, ...accountsWithTotals];
+    return accountsWithTotals;
 }
 
 export async function checkCanUserAddAccount(userId: string): Promise<boolean> {
