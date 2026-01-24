@@ -1,6 +1,7 @@
 import type { TUser } from "~~/shared/types/entity.types";
 import { z } from "zod";
 import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
+import { checkAccountBelongsToUser } from "~~/server/handlers/account.handler";
 import {
     canUserUpdateTransaction,
     checkTransactionExists,
@@ -58,6 +59,22 @@ export default defineEventHandler(async (event) => {
                 message: "Invalid input",
                 data: result.error.issues,
             });
+        }
+
+        // Check the new account if altered belongs to the user or not
+        if (result.data.account_id) {
+            const accountBelongsToUser = await checkAccountBelongsToUser(
+                result.data.account_id,
+                user.id,
+            );
+
+            if (!accountBelongsToUser) {
+                throw createError({
+                    statusCode: SERVER_STATUS_CODES.FORBIDDEN,
+                    statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.FORBIDDEN],
+                    message: "You are not allowed to assign transactions to this account",
+                });
+            }
         }
 
         const updatedTransaction = await updateTransactionForUser(user.id, {

@@ -33,7 +33,7 @@ export const ZAddTransactionSchema = z.object({
         }, { message: "Date must be a valid date" }),
     category_id: z
         .uuidv4()
-        .min(1, { message: "Category is required" }),
+        .optional(),
     account_id: z
         .uuidv4()
         .min(1, { message: "Account is required" }),
@@ -44,8 +44,10 @@ export const ZAddTransactionSchema = z.object({
         .max(60, { message: "Description must be at most 60 characters" }),
 }).refine((data) => {
     // Category required ONLY for expense (type === 1)
-    if (data.type === TRANSACTION_TYPE.EXPENSE && !data.category_id?.trim()) {
-        return false;
+    if (data.type === TRANSACTION_TYPE.EXPENSE) {
+        if (!data.category_id || data.category_id.trim() === "") {
+            return false;
+        }
     }
     return true;
 }, {

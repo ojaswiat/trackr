@@ -267,11 +267,18 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     try {
         saving.value = true;
 
+        const requestBody = {
+            ...event.data,
+            category_id: event.data.type === TRANSACTION_TYPE.INCOME
+                ? undefined
+                : event.data.category_id,
+        };
+
         if (props.transaction?.id) {
             // Update transaction
             await $fetch(`${TRANSACTIONS_UPDATE}/${props.transaction.id}`, {
                 method: "PUT",
-                body: event.data,
+                body: requestBody,
             });
 
             toast.add({ title: "Success", description: "Transaction updated successfully!", color: "success" });
@@ -281,7 +288,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             // Add transaction
             await $fetch(TRANSACTIONS_ADD, {
                 method: "POST",
-                body: event.data,
+                body: requestBody,
             });
 
             toast.add({ title: "Success", description: "Transaction added successfully!", color: "success" });

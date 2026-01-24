@@ -3,6 +3,7 @@ import { and, desc, eq, gte, lt, lte } from "drizzle-orm";
 import { db } from "~~/server/utils/db";
 import { APP_CONFIG } from "~~/shared/constants/config.const";
 import { transactions } from "~~/shared/db/schema";
+import { getIncomeCategory } from "./category.handler";
 
 export async function checkTransactionExists(transactionId: string): Promise<boolean> {
     const result = await db
@@ -129,20 +130,22 @@ export async function addTransactionForUser(
     payload: {
         type: number;
         amount: number;
-        category_id: string;
+        category_id?: string;
         account_id?: string;
         description: string;
         transaction_date: string;
         created_at?: string;
     },
 ): Promise<TTransaction> {
+    const categoryId = payload.category_id ?? (await getIncomeCategory());
+
     const [newTransaction] = await db
         .insert(transactions)
         .values({
             user_id: userId,
             type: payload.type,
             amount: String(payload.amount),
-            category_id: payload.category_id,
+            category_id: categoryId,
             account_id: payload.account_id,
             description: payload.description,
             transaction_date: new Date(payload.transaction_date),
@@ -173,19 +176,21 @@ export async function updateTransactionForUser(
         id: string;
         type: number;
         amount: number;
-        category_id: string;
+        category_id?: string;
         account_id?: string;
         description: string;
         transaction_date: string;
         created_at?: string;
     },
 ): Promise<TTransaction> {
+    const categoryId = payload.category_id ?? (await getIncomeCategory());
+
     await db
         .update(transactions)
         .set({
             type: payload.type,
             amount: String(payload.amount),
-            category_id: payload.category_id,
+            category_id: categoryId,
             account_id: payload.account_id,
             description: payload.description,
             transaction_date: new Date(payload.transaction_date),

@@ -1,5 +1,6 @@
 import type { TUser } from "~~/shared/types/entity.types";
 import { STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
+import { checkAccountBelongsToUser } from "~~/server/handlers/account.handler";
 import { getDashboardData } from "~~/server/handlers/dashboard.handler";
 import { isDev } from "~~/server/utils/api.utils";
 import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
@@ -25,6 +26,21 @@ export default defineEventHandler(async (event) => {
         }
 
         const { startDate: startDateStr, endDate: endDateStr, account_id } = validatedQuery.data;
+
+        if (account_id) {
+            const accountBelongsToUser = await checkAccountBelongsToUser(
+                account_id,
+                userId,
+            );
+
+            if (!accountBelongsToUser) {
+                throw createError({
+                    statusCode: SERVER_STATUS_CODES.FORBIDDEN,
+                    statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.FORBIDDEN],
+                    message: "You are not allowed to view data for this account",
+                });
+            }
+        }
 
         const startDate = startDateStr ? new Date(startDateStr) : undefined;
         const endDate = endDateStr ? new Date(endDateStr) : undefined;

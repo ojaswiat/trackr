@@ -5,6 +5,29 @@ import { db } from "~~/server/utils/db";
 import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { categories, transactions } from "~~/shared/db/schema";
 
+export async function checkCategoryExists(categoryId: string): Promise<boolean> {
+    const result = await db
+        .select({ id: categories.id })
+        .from(categories)
+        .where(eq(categories.id, categoryId));
+
+    return result.length > 0;
+}
+
+export async function getIncomeCategory(): Promise<string> {
+    const result = await db
+        .select({ id: categories.id })
+        .from(categories)
+        .where(eq(categories.type, CATEGORY_TYPE.INCOME))
+        .limit(1);
+
+    if (!result?.[0]?.id) {
+        throw new Error("No income category present!");
+    } else {
+        return result[0].id;
+    }
+}
+
 export async function getAllCategories(): Promise<TCategory[]> {
     const result = await db.select().from(categories);
     return result as TCategory[];
