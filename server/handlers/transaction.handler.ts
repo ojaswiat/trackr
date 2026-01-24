@@ -50,7 +50,13 @@ export async function getTransactionDetails(transactionId: string): Promise<TTra
 
 export async function getAllTransactionsForUser(
     userId: string,
-    filters?: { account_id?: string; startDate?: Date; endDate?: Date },
+    filters?: {
+        account_id?: string;
+        startDate?: Date;
+        endDate?: Date;
+        type?: number;
+        category_id?: string;
+    },
     options?: { limit?: number; cursor?: string },
 ): Promise<{ data: TTransaction[]; meta: { next_cursor: string | null; has_more: boolean } }> {
     const limit = options?.limit ?? 20;
@@ -70,6 +76,14 @@ export async function getAllTransactionsForUser(
 
     if (filters?.endDate) {
         conditions.push(lte(transactions.transaction_date, filters.endDate));
+    }
+
+    if (filters?.type !== undefined) {
+        conditions.push(eq(transactions.type, filters.type));
+    }
+
+    if (filters?.category_id) {
+        conditions.push(eq(transactions.category_id, filters.category_id));
     }
 
     if (cursor) {

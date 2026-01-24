@@ -15,11 +15,15 @@ export default defineEventHandler(async (event) => {
         const { id: userId } = user;
 
         const query = getQuery(event);
-        const account_id = query.account_id ? String(query.account_id) : undefined;
+
         const limit = query.limit ? Number(query.limit) : 20;
         const cursor = query.cursor ? String(query.cursor) : undefined;
+
+        const account_id = query.account_id ? String(query.account_id) : undefined;
         const startDate = query.startDate ? new Date(String(query.startDate)) : undefined;
         const endDate = query.endDate ? new Date(String(query.endDate)) : undefined;
+        const type = query.type !== undefined ? Number(query.type) : undefined;
+        const category_id = query.category_id ? String(query.category_id) : undefined;
 
         if (account_id) {
             const isAccountOwner = await checkAccountBelongsToUser(account_id, userId);
@@ -32,7 +36,17 @@ export default defineEventHandler(async (event) => {
             }
         }
 
-        const { data: transactions, meta } = await getAllTransactionsForUser(userId, { account_id, startDate, endDate }, { limit, cursor });
+        const { data: transactions, meta } = await getAllTransactionsForUser(
+            userId,
+            {
+                account_id,
+                category_id,
+                type,
+                startDate,
+                endDate,
+            },
+            { limit, cursor },
+        );
         return {
             statusCode: SERVER_STATUS_CODES.OK,
             statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.OK],
