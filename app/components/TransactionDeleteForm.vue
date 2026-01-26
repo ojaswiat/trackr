@@ -23,6 +23,7 @@
                 <UButton
                     type="submit"
                     :loading="deleting"
+                    :disabled="!!user.is_demo"
                     class="w-fit"
                     color="error">
                     Delete
@@ -34,6 +35,7 @@
 
 <script setup lang="ts">
 import { TRANSACTIONS_DELETE } from "~~/shared/constants/api.const";
+import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
     transaction: {
@@ -43,6 +45,9 @@ const props = defineProps({
 });
 
 const toast = useToast();
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 
 const open = defineModel<boolean>("open");
 

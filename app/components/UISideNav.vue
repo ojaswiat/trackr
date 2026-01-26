@@ -5,7 +5,7 @@
                 name="i-lucide:book-text"
                 class="w-10 h-10 shadow-md"
             />
-            <p class="flex-shrink-0 text-4xl font-bold">
+            <p class="shrink-0 text-4xl font-bold">
                 trackr.
             </p>
         </div>

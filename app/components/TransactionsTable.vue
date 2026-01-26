@@ -94,7 +94,7 @@ const props = defineProps({
 const emits = defineEmits(["loadMore"]);
 
 const userStore = useUserStore();
-const { currency } = storeToRefs(userStore);
+const { currency, user } = storeToRefs(userStore);
 
 const table = useTemplateRef("table");
 const UButton = resolveComponent("UButton");
@@ -229,6 +229,7 @@ function getRowItems(row: Row<TTransactionUI>) {
             label: "Edit",
             icon: "i-lucide:pencil-line",
             color: "info",
+            disabled: !!user.value.is_demo,
             onSelect() {
                 onTransactionEdit(row.original.id);
             },
@@ -237,6 +238,7 @@ function getRowItems(row: Row<TTransactionUI>) {
             label: "Delete",
             icon: "i-lucide:trash-2",
             color: "error",
+            disabled: !!user.value.is_demo,
             onSelect() {
                 onTransactionDelete(row.original.id);
             },

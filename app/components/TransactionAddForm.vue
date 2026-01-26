@@ -136,7 +136,7 @@
                 v-if="!props.transaction?.id"
                 type="submit"
                 :loading="saving && !save"
-                :disabled="saving && save"
+                :disabled="(saving && save) || !!user.is_demo"
                 color="primary"
                 variant="outline"
                 icon="i-lucide:plus">
@@ -145,7 +145,7 @@
             <UButton
                 type="submit"
                 :loading="saving && save"
-                :disabled="saving && !save"
+                :disabled="(saving && !save) || !!user.is_demo"
                 color="primary"
                 icon="i-lucide:file-check"
                 @click="save = true">
@@ -158,11 +158,12 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type { z } from "zod";
-import { CalendarDate, getLocalTimeZone, parseDate, today } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { cloneDeep, filter, map } from "lodash-es";
 import { ACCOUNTS_FETCH, CATEGORIES_FETCH, TRANSACTIONS_ADD, TRANSACTIONS_UPDATE } from "~~/shared/constants/api.const";
 import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { ZAddTransactionSchema } from "~~/shared/schemas/zod.schema";
+import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
     transaction: {
@@ -174,6 +175,9 @@ const props = defineProps({
 // TODO: Get this from stores
 const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 
 const categories = computed(() => {
     return categoriesResponse.value?.data?.categories || [];

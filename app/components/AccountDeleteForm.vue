@@ -34,6 +34,7 @@
                 <UButton
                     type="submit"
                     :loading="deleting"
+                    :disabled="!!user.is_demo"
                     class="w-fit"
                     color="error">
                     Delete
@@ -48,6 +49,7 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import type z from "zod";
 import { ACCOUNTS_DELETE } from "~~/shared/constants/api.const";
 import { ZDeleteAccountSchema } from "~~/shared/schemas/zod.schema";
+import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
     account: {
@@ -57,6 +59,9 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update"]);
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 
 const toast = useToast();
 

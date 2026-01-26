@@ -1,4 +1,4 @@
-import { email, z } from "zod";
+import { z } from "zod";
 import { APP_CONFIG } from "../constants/config.const";
 import { TRANSACTION_TYPE } from "../constants/enums";
 

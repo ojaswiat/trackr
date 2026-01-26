@@ -80,6 +80,7 @@
                 <UButton
                     type="submit"
                     :loading="adding"
+                    :disabled="!!user.is_demo"
                     color="primary"
                     :icon="edit && props.account?.id ? 'i-lucide:refresh-ccw' : 'i-lucide:plus'">
                     {{ edit && props.account?.id ? 'Update' : 'Add' }}
@@ -94,6 +95,7 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import type z from "zod";
 import { ACCOUNTS_ADD, ACCOUNTS_UPDATE } from "~~/shared/constants/api.const";
 import { ZAddAccountSchema } from "~~/shared/schemas/zod.schema";
+import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
     account: {
@@ -103,6 +105,9 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update"]);
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 
 const toast = useToast();
 

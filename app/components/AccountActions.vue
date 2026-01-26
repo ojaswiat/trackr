@@ -8,6 +8,7 @@
                 class="rounded-full"
                 color="info"
                 icon="i-lucide-pencil-line"
+                :disabled="!!user.is_demo"
                 @click="emits('onEditAccount')"
             />
         </UTooltip>
@@ -19,6 +20,7 @@
                 variant="ghost"
                 class="rounded-full"
                 icon="i-lucide-trash-2"
+                :disabled="!!user.is_demo"
                 @click="emits('onDeleteAccount')"
             />
         </UTooltip>
@@ -26,5 +28,9 @@
 </template>
 
 <script setup lang="ts">
+import useUserStore from "~/stores/UserStore";
+
 const emits = defineEmits(["onEditAccount", "onDeleteAccount"]);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 </script>

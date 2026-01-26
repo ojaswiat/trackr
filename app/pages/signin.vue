@@ -66,8 +66,6 @@ const toast = useToast();
 
 const isDemoLoading = ref(false);
 
-const runtimeConfig = useRuntimeConfig();
-
 async function signInWithGitHub() {
     const { error } = await supabase.auth.signInWithOAuth({
         options: {
@@ -109,8 +107,8 @@ async function signInDemoUser() {
 
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
-            email: runtimeConfig.demoUserEmail,
-            password: runtimeConfig.demoUserPassword,
+            email: "demo@trackr.app",
+            password: "asakgV-2ubsi-akjBva82",
         });
 
         if (error) {

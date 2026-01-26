@@ -28,7 +28,7 @@
                 <UButton
                     color="error"
                     variant="soft"
-                    :disabled="loading"
+                    :disabled="loading || !!user.is_demo"
                     class="w-fit ml-auto"
                     @click="showDeleteUserModal = true">
                     Delete Account
@@ -103,7 +103,7 @@ async function deleteUser() {
     await userStore.deleteUser();
 }
 
-onMounted(async () => {
-    await userStore.fetchUser();
+onMounted(() => {
+    userStore.fetchUser();
 });
 </script>

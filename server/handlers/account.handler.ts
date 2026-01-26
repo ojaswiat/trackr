@@ -1,6 +1,6 @@
 import type { TAccount } from "~~/shared/types/entity.types";
 import { and, eq, gte, lte, sql, sum } from "drizzle-orm";
-import { map, reduce } from "lodash-es";
+import { map } from "lodash-es";
 import { db } from "~~/server/utils/db";
 import { APP_CONFIG } from "~~/shared/constants/config.const";
 import { TRANSACTION_TYPE } from "~~/shared/constants/enums";

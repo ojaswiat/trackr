@@ -55,7 +55,7 @@
             <UButton
                 type="submit"
                 :loading="loading"
-                :disabled="isSame"
+                :disabled="isSame || !!userStore.user.is_demo"
                 color="primary">
                 Save Changes
             </UButton>

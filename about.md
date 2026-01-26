@@ -1,9 +1,11 @@
 # Trackr Application Description
 
 ## Overview
+
 Trackr is a full-stack personal finance tracking application built with **Nuxt 3**, **TypeScript**, **PostgreSQL**, and **Drizzle ORM**. It allows users to manage accounts, track income and expenses, visualize financial data through a dashboard, and maintain a transaction history.
 
 ## Tech Stack
+
 - **Framework**: Nuxt 3 (Vue 3 + Nitro Server)
 - **Language**: TypeScript
 - **Database**: PostgreSQL
@@ -18,6 +20,7 @@ Trackr is a full-stack personal finance tracking application built with **Nuxt 3
 ## File Structure
 
 ### `app/` (Frontend)
+
 Contains the Vue.js frontend application logic and UI.
 
 - **`assets/`**: Static assets like CSS (`main.css`) and data (`locale.json`).
@@ -46,6 +49,7 @@ Contains the Vue.js frontend application logic and UI.
 - **`constants/`**: UI constants (`route.const.ts`, `ui.const.ts`).
 
 ### `server/` (Backend)
+
 Contains the API routes and business logic.
 
 - **`api/`**: API Route handlers (Nitro).
@@ -65,6 +69,7 @@ Contains the API routes and business logic.
 - **`constants/`**: Server constants (`server.const.ts`).
 
 ### `shared/` (Common)
+
 Code shared between frontend and backend.
 
 - **`db/`**: Database configuration.
@@ -78,6 +83,7 @@ Code shared between frontend and backend.
 ## Database Schema (`shared/db/schema.ts`)
 
 ### `users`
+
 - `id`: UUID (PK)
 - `first_name`, `last_name`: Varchar
 - `email`: Varchar (Unique)
@@ -85,6 +91,7 @@ Code shared between frontend and backend.
 - `created_at`, `updated_at`: Timestamp
 
 ### `accounts`
+
 - `id`: UUID (PK)
 - `user_id`: UUID (FK -> users.id, Cascade Delete)
 - `name`: Varchar
@@ -94,6 +101,7 @@ Code shared between frontend and backend.
 - `created_at`, `updated_at`: Timestamp
 
 ### `categories`
+
 - `id`: UUID (PK)
 - `name`: Varchar
 - `description`: Varchar
@@ -102,6 +110,7 @@ Code shared between frontend and backend.
 - `created_at`, `updated_at`: Timestamp
 
 ### `transactions`
+
 - `id`: UUID (PK)
 - `user_id`: UUID (FK -> users.id, Cascade Delete)
 - `account_id`: UUID (FK -> accounts.id, Set Null)
@@ -117,16 +126,19 @@ Code shared between frontend and backend.
 ## Handlers & Functions (`server/handlers/`)
 
 ### `account.handler.ts`
+
 - `checkAccountExists(accountId)`: Boolean
 - `checkAccountBelongsToUser(accountId, userId)`: Boolean
 - `getAccountDetails(accountId)`: Returns `TAccount` with calculated `total_income` and `total_expense`.
 - `getAllAccountsForUser(userId)`: Returns list of accounts with financial summaries (Income/Expense totals per account).
 
 ### `category.handler.ts`
+
 - `getAllCategories()`: Returns static/DB categories.
 - `getCategoryStatistics(userId, accountIds?, filters?)`: Returns categories with aggregated `total_amount` based on transactions, supporting date and account filtering.
 
 ### `dashboard.handler.ts`
+
 - `getDashboardData(userId, filters?)`: Aggregates data for the dashboard:
     - **Net Worth**: Initial balances + Total Income - Total Expense.
     - **Period Overview**: Income vs Expense for the selected date range.
@@ -134,6 +146,7 @@ Code shared between frontend and backend.
     - **Category Breakdown**: Via `getCategoryStatistics`.
 
 ### `transaction.handler.ts`
+
 - `checkTransactionExists(transactionId)`: Boolean
 - `checkTransactionBelongsToUser(transactionId, userId)`: Boolean
 - `canUserUpdateTransaction(transactionId, userId)`: Permission check.
@@ -141,6 +154,7 @@ Code shared between frontend and backend.
 - `getAllTransactionsForUser(userId, filters?, options?)`: Returns paginated transactions list with filtering (Date, Account, Category).
 
 ### `user.handler.ts`
+
 - `getUser(userId)`: Fetch user profile.
 - `updateUser(userId, payload)`: Update profile (Name, Currency).
 - `deleteUser(userId)`: Delete user and cascade delete related data.
@@ -150,27 +164,32 @@ Code shared between frontend and backend.
 ## API Routes & Endpoints
 
 ### User
+
 - `GET /api/user/fetch`: Get current user profile.
 - `PUT /api/user/update`: Update user details.
 - `DELETE /api/user/delete`: Delete user account.
 
 ### Dashboard
+
 - `GET /api/dashboard/fetch`: Get aggregated dashboard data (Net Worth, Summary, Charts).
     - Query Params: `startDate`, `endDate`, `account_id`.
 
 ### Transactions
+
 - `GET /api/transactions/fetch`: Get paginated transactions.
 - `POST /api/transactions/add`: Create new transaction.
 - `PUT /api/transactions/update`: Update existing transaction.
 - `DELETE /api/transactions/delete`: Delete transaction.
 
 ### Accounts
+
 - `GET /api/accounts/fetch`: Get all user accounts.
 - `POST /api/accounts/add`: Create new account.
 - `PUT /api/accounts/update`: Update account.
 - `DELETE /api/accounts/delete`: Delete account.
 
 ### Categories
+
 - `GET /api/categories/fetch`: Get all categories.
 
 ---
@@ -178,9 +197,11 @@ Code shared between frontend and backend.
 ## Shared Types & Enums
 
 ### Types (`TUser`, `TAccount`, `TTransaction`, `TCategory`)
+
 TypeScript interfaces mirroring the database entities, often extending them with computed fields (e.g., `TAccount` includes `total_income`).
 
 ### Enums
+
 - **`TRANSACTION_TYPE`**: `INCOME (0)`, `EXPENSE (1)`
 - **`CATEGORY_TYPE`**: `INCOME (0)`, `EXPENSE (1)`
 - **`SERVER_STATUS_CODES`**: Standard HTTP status codes (200, 201, 400, 404, 500, etc.).
@@ -190,10 +211,11 @@ TypeScript interfaces mirroring the database entities, often extending them with
 ## Utils
 
 ### Frontend (`app/utils/`)
+
 - **`useCurrencyFormatter(amount)`**: Formats numbers to currency strings (e.g., "£1.2k", "£500.00") with suffix support (K, M, B, T).
 - **`useDateTimeFormatter(isoString)`**: Converts ISO dates to readable formats (`DD MMM, YYYY` and `HH:MM AM/PM`).
 
 ### Server (`server/utils/`)
+
 - **`db.ts`**: Exports the configured Drizzle ORM instance.
 - **`api.utils.ts`**: Helper functions for API response formatting and environment checks (`isDev`).
-

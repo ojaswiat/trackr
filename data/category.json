@@ -1,5 +1,5 @@
 {
-    "categories":[
+    "categories": [
         {
             "id": "cat_001",
             "name": "Income",
@@ -16,7 +16,7 @@
         },
         {
             "id": "cat_003",
-            "name": "Transport", 
+            "name": "Transport",
             "description": "Public transport, fuel, parking, and ride-sharing",
             "color": "#f59e0b",
             "type": 1
