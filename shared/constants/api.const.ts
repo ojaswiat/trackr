@@ -26,3 +26,4 @@ export const USER_DELETE = `${API_USER}/delete`;
 
 // Others
 export const DASHBOARD_FETCH = "/api/dashboard/fetch";
+export const DEMO_SIGNIN = "/api/auth/demo-signin";

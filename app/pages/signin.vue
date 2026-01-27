@@ -60,6 +60,8 @@
 </template>
 
 <script setup lang="ts">
+import { DEMO_SIGNIN } from "~~/shared/constants/api.const";
+
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const toast = useToast();
@@ -106,34 +108,15 @@ async function signInDemoUser() {
     isDemoLoading.value = true;
 
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: "demo@trackr.app",
-            password: "asakgV-2ubsi-akjBva82",
-        });
-
-        if (error) {
-            console.error("Error signing in as demo:", error);
-            toast.add({
-                title: "Demo sign in failed",
-                description: "Unable to sign in to demo account. Please try again.",
-                color: "error",
-            });
-            return;
+        await $fetch(DEMO_SIGNIN, { method: "POST" });
+        if (window) {
+            window.location.href = ROUTE_DASHBOARD;
         }
-
-        if (data.user) {
-            toast.add({
-                title: "Welcome to Demo Mode!",
-                description: "You are viewing a read-only demo account.",
-                color: "success",
-                icon: "i-lucide-info",
-            });
-        }
-    } catch (err) {
-        console.error("Unexpected error:", err);
+    } catch (err: any) {
+        console.error("Demo sign-in error:", err);
         toast.add({
-            title: "Error",
-            description: "An unexpected error occurred.",
+            title: "Demo sign in failed",
+            description: err.data?.message || "Unable to sign in.",
             color: "error",
         });
     } finally {
@@ -143,7 +126,7 @@ async function signInDemoUser() {
 
 watch(user, async () => {
     if (user.value) {
-        navigateTo(ROUTE_DASHBOARD);
+        await navigateTo(ROUTE_DASHBOARD);
     }
 }, { immediate: true });
 
