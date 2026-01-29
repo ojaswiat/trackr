@@ -30,6 +30,7 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { find, map, reduce } from "lodash-es";
 import { ACCOUNTS_FETCH, CATEGORIES_FETCH, TRANSACTIONS_FETCH } from "~~/shared/constants/api.const";
 import { APP_CONFIG } from "~~/shared/constants/config.const";
+import useTransactionActions from "~/composables/useTransactionActions";
 
 definePageMeta({
     title: "Transactions",
@@ -119,19 +120,57 @@ const selectedAccountName = computed(() => {
     return selectedAccountItem?.name ?? "";
 });
 
-function mapTransactions(rawTransactions: TTransaction[]) {
-    return map(rawTransactions, (transaction) => {
-        const transactionCategory = categoriesMap.value[transaction.category_id];
-        const transactionAccount = accountsMap.value[transaction.account_id];
+const { registerRefreshCallback, registerOptimisticCallbacks } = useTransactionActions();
 
-        return {
-            ...transaction,
-            category_name: transactionCategory?.name,
-            category_color: transactionCategory?.color,
-            account_name: transactionAccount?.name,
-            account_color: transactionAccount?.color,
-        };
-    }) as TTransactionUI[];
+/**
+ * Check if transaction matches current filters
+ */
+function transactionMatchesFilters(transaction: TTransaction): boolean {
+    // Check account filter
+    if (selectedAccount.value && transaction.account_id !== selectedAccount.value) {
+        return false;
+    }
+
+    // Check category filter
+    if (selectedCategory.value && transaction.category_id !== selectedCategory.value) {
+        return false;
+    }
+
+    // Check type filter
+    if (selectedType.value !== undefined && transaction.type !== selectedType.value) {
+        return false;
+    }
+
+    // Check date range filter
+    const transactionDate = new Date(transaction.transaction_date || transaction.created_at);
+    const startDate = new Date(selectedDateRange.value.start.toString());
+    const endDate = new Date(selectedDateRange.value.end.toString());
+
+    if (transactionDate < startDate || transactionDate > endDate) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Format transaction with category and account details
+ */
+function formatTransaction(transaction: TTransaction): TTransactionUI {
+    const transactionCategory = categoriesMap.value[transaction.category_id];
+    const transactionAccount = accountsMap.value[transaction.account_id];
+
+    return {
+        ...transaction,
+        category_name: transactionCategory?.name,
+        category_color: transactionCategory?.color,
+        account_name: transactionAccount?.name,
+        account_color: transactionAccount?.color,
+    } as TTransactionUI;
+}
+
+function mapTransactions(rawTransactions: TTransaction[]) {
+    return map(rawTransactions, formatTransaction);
 }
 
 const transactions = computed(() => {
@@ -155,6 +194,44 @@ async function loadMoreTransactions() {
 }
 
 onMounted(() => {
+    // Register this page's refresh function
+    registerRefreshCallback(refreshTransactions);
+
+    // Register optimistic update handlers
+    registerOptimisticCallbacks({
+        onAdd: (transaction) => {
+            // Only add if it matches current filters
+            if (transactionMatchesFilters(transaction)) {
+                const formattedTransaction = formatTransaction(transaction);
+                // Add to the beginning of the list
+                accumulatedTransactions.value.unshift(formattedTransaction);
+            }
+        },
+        onUpdate: (transaction) => {
+            // Find and update the transaction in the list
+            const index = accumulatedTransactions.value.findIndex(t => t.id === transaction.id);
+            if (index !== -1) {
+                // Check if it still matches filters after update
+                if (transactionMatchesFilters(transaction)) {
+                    accumulatedTransactions.value[index] = formatTransaction(transaction);
+                } else {
+                    // Remove if it no longer matches filters
+                    accumulatedTransactions.value.splice(index, 1);
+                }
+            } else if (transactionMatchesFilters(transaction)) {
+                // Add if it wasn't in the list but now matches filters
+                accumulatedTransactions.value.unshift(formatTransaction(transaction));
+            }
+        },
+        onDelete: (transactionId) => {
+            // Remove transaction from the list
+            const index = accumulatedTransactions.value.findIndex(t => t.id === transactionId);
+            if (index !== -1) {
+                accumulatedTransactions.value.splice(index, 1);
+            }
+        },
+    });
+
     refreshTransactions();
 });
 

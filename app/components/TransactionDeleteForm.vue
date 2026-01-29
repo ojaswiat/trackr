@@ -34,7 +34,9 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { TRANSACTIONS_DELETE } from "~~/shared/constants/api.const";
+import useTransactionActions from "~/composables/useTransactionActions";
 import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
@@ -49,6 +51,8 @@ const toast = useToast();
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
+const { applyOptimisticDelete, triggerTransactionRefresh } = useTransactionActions();
+
 const open = defineModel<boolean>("open");
 
 const deleting = ref(false);
@@ -57,12 +61,23 @@ async function onSubmit() {
     try {
         deleting.value = true;
 
-        await $fetch(`${TRANSACTIONS_DELETE}/${props.transaction?.id}`, {
-            method: "DELETE",
-        });
+        // Apply optimistic delete to UI
+        applyOptimisticDelete(props.transaction?.id || "");
 
-        toast.add({ title: "Success", description: "Transaction deleted successfully!", color: "success" });
-        open.value = false;
+        try {
+            // Call API to persist deletion
+            await $fetch(`${TRANSACTIONS_DELETE}/${props.transaction?.id}`, {
+                method: "DELETE",
+            });
+
+            toast.add({ title: "Success", description: "Transaction deleted successfully!", color: "success" });
+            open.value = false;
+        } catch (apiError) {
+            // Rollback on API failure by refreshing
+            toast.add({ title: "Error", description: "Failed to delete. Rolling back...", color: "error" });
+            await triggerTransactionRefresh();
+            throw apiError;
+        }
     } catch (e) {
         const error = e as TAPIResponseError;
         const message = error.message || "Something went wrong! Please try again later.";

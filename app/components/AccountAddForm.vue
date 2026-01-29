@@ -42,7 +42,7 @@
                     :items="colorOptions">
                     <template #item-leading="{ item }">
                         <div
-                            class="h-4 w-4 rounded-full mt-[2px] mr-2"
+                            class="h-4 w-4 rounded-full mt-0.5 mr-2"
                             :style="{ backgroundColor: item.value }">
                         </div>
                     </template>

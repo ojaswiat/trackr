@@ -160,9 +160,11 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import type { z } from "zod";
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { cloneDeep, filter, map } from "lodash-es";
+import { storeToRefs } from "pinia";
 import { ACCOUNTS_FETCH, CATEGORIES_FETCH, TRANSACTIONS_ADD, TRANSACTIONS_UPDATE } from "~~/shared/constants/api.const";
 import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { ZAddTransactionSchema } from "~~/shared/schemas/zod.schema";
+import useTransactionActions from "~/composables/useTransactionActions";
 import useUserStore from "~/stores/UserStore";
 
 const props = defineProps({
@@ -172,12 +174,13 @@ const props = defineProps({
     },
 });
 
-// TODO: Get this from stores
 const { data: categoriesResponse } = await useFetch(CATEGORIES_FETCH);
 const { data: accountsResponse } = await useFetch(ACCOUNTS_FETCH);
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
+
+const { applyOptimisticAdd, applyOptimisticUpdate, triggerTransactionRefresh } = useTransactionActions();
 
 const categories = computed(() => {
     return categoriesResponse.value?.data?.categories || [];
@@ -279,21 +282,41 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         };
 
         if (props.transaction?.id) {
-            // Update transaction
-            await $fetch(`${TRANSACTIONS_UPDATE}/${props.transaction.id}`, {
-                method: "PUT",
-                body: requestBody,
-            });
+            // Update transaction - optimistic update
+            const optimisticTransaction: TTransaction = {
+                ...props.transaction,
+                ...requestBody,
+            };
 
-            toast.add({ title: "Success", description: "Transaction updated successfully!", color: "success" });
+            // Apply optimistic update to UI
+            applyOptimisticUpdate(optimisticTransaction);
 
-            open.value = false;
+            try {
+                // Call API to persist
+                await $fetch(`${TRANSACTIONS_UPDATE}/${props.transaction.id}`, {
+                    method: "PUT",
+                    body: requestBody,
+                });
+
+                toast.add({ title: "Success", description: "Transaction updated successfully!", color: "success" });
+                open.value = false;
+            } catch (apiError) {
+                // Rollback on API failure by refreshing
+                toast.add({ title: "Error", description: "Failed to update. Rolling back...", color: "error" });
+                await triggerTransactionRefresh();
+                throw apiError;
+            }
         } else {
-            // Add transaction
-            await $fetch(TRANSACTIONS_ADD, {
+            // Add transaction - call API first to get the full transaction object with ID
+            const response = await $fetch<TAPIResponseSuccess<{ transaction: TTransaction }>>(TRANSACTIONS_ADD, {
                 method: "POST",
                 body: requestBody,
             });
+
+            const newTransaction = response.data.transaction;
+
+            // Apply optimistic add to UI with the actual response
+            applyOptimisticAdd(newTransaction);
 
             toast.add({ title: "Success", description: "Transaction added successfully!", color: "success" });
 
