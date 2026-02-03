@@ -2,7 +2,7 @@
     <header class="w-full flex justify-start items-start gap-4">
         <div class="flex flex-col gap-2">
             <div class="flex items-center gap-4">
-                <h1 class="text-4xl font-bold">
+                <h1 class="text-2xl sm:text-4xl font-bold">
                     {{ metaTitle || 'Dashboard' }}
                 </h1>
                 <UButton

@@ -1,6 +1,6 @@
 <template>
     <div class="px-4 space-y-8">
-        <UCard class="flex-shrink-0 min-w-sm">
+        <UCard class="shrink-0">
             <div class="w-full space-y-8">
                 <h2 class="text-2xl font-semibold leading-6 text-gray-900 dark:text-white">
                     User Profile
@@ -51,7 +51,7 @@
                     <div class="flex items-center gap-4">
                         <UIcon
                             name="i-lucide:alert-triangle"
-                            class="w-8 h-8 text-error flex-shrink-0"
+                            class="w-8 h-8 text-error shrink-0"
                         />
                         <p> Are you sure you want to delete your profile (user account)? This action cannot be undone.</p>
                     </div>
