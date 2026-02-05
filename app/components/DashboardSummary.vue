@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-wrap items-center gap-8">
-        <UCard class="grow w-xs sm:w-sm bg-linear-to-br from-primary-50 to-primary-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
+        <UCard class="grow sm:grow-0 w-xs shrink-0 bg-linear-to-br from-primary-50 to-primary-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
             <div class="flex flex-col gap-1">
                 <div class="flex items-center justify-between">
                     <p class="text-neutral-800">
@@ -19,7 +19,7 @@
             </div>
         </UCard>
 
-        <UCard class="grow w-xs sm:w-sm bg-linear-to-br from-error-50 to-error-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
+        <UCard class="grow sm:grow-0 w-xs shrink-0 bg-linear-to-br from-error-50 to-error-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
             <div class="flex flex-col gap-1">
                 <div class="flex items-center justify-between">
                     <p class="text-neutral-800">
@@ -38,7 +38,7 @@
             </div>
         </UCard>
 
-        <UCard class="grow w-xs sm:w-sm bg-linear-to-br from-info-50 to-info-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
+        <UCard class="grow sm:grow-0 w-xs shrink-0 bg-linear-to-br from-info-50 to-info-400 hover:shadow-lg transition-shadow duration-300 ease-in-out">
             <div class="flex flex-col gap-1">
                 <div class="flex items-center justify-between">
                     <p class="text-neutral-800">

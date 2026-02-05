@@ -247,7 +247,7 @@ const accountOptions = computed(() => {
             value: account.id,
             color: account.color,
         };
-    }).slice(1); // Remove the first option (All Accounts)
+    });
 });
 
 const categoryOptions = computed(() => {

@@ -56,3 +56,18 @@ export async function deleteUser(userId: string): Promise<void> {
     // accounts and transactions associated with the user.
     await db.delete(users).where(eq(users.id, userId));
 }
+
+export async function isDemoUser(userId: string): Promise<boolean> {
+    const [user] = await db
+        .select({
+            is_demo: users.is_demo,
+        })
+        .from(users)
+        .where(eq(users.id, userId));
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    return user.is_demo ?? false;
+}

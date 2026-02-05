@@ -38,7 +38,6 @@ const useUserStore = defineStore("UserStore", () => {
         try {
             loading.value = true;
             const userResponse = await $fetch(USER_FETCH);
-
             user.value = userResponse.data;
         } catch (e) {
             const error = e as TAPIResponseError;

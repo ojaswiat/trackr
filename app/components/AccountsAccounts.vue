@@ -11,7 +11,7 @@
         <UCard
             v-if="props.accounts.length < APP_CONFIG.MAX_ACCOUNTS_PER_USER"
             as="button"
-            class="accounts-card-hover add-card w-60 h-[136px] flex-shrink-0 cursor-pointer"
+            class="accounts-card-hover add-card grow sm:grow-0 w-xs shrink-0 cursor-pointer"
             :ui="{
                 root: 'border border-dashed border-muted hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-900/50',
             }"

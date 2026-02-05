@@ -1,6 +1,8 @@
 import type { TUser } from "~~/shared/types/entity.types";
+import { isEmpty } from "lodash-es";
 import { DEMO_PROTECTED_ROUTES, STATUS_CODE_MESSAGE_MAP } from "~~/server/constants/server.const";
 import { SERVER_STATUS_CODES } from "~~/shared/constants/enums";
+import { isDemoUser } from "../handlers/user.handler";
 
 export default defineEventHandler(async (event) => {
     const path = event.path;
@@ -17,7 +19,17 @@ export default defineEventHandler(async (event) => {
     // Check if user is demo
     const user = event.context.user as TUser | undefined;
 
-    if (user?.is_demo) {
+    if (isEmpty(user)) {
+        throw createError({
+            statusCode: SERVER_STATUS_CODES.NOT_FOUND,
+            statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.NOT_FOUND],
+            message: "User not found!",
+        });
+    }
+
+    const isDemo = await isDemoUser(user?.id ?? "");
+
+    if (isDemo) {
         throw createError({
             statusCode: SERVER_STATUS_CODES.FORBIDDEN,
             statusMessage: STATUS_CODE_MESSAGE_MAP[SERVER_STATUS_CODES.FORBIDDEN],
