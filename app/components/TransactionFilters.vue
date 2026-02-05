@@ -13,13 +13,13 @@
         </UButton>
         <USelect
             v-model="selectedType"
-            class="w-40 ml-auto"
+            class="w-40 grow sm:ml-auto"
             :items="typeSelectOptions"
             placeholder="Select a type"
         />
         <USelect
             v-model="selectedCategory"
-            class="w-40"
+            class="w-40 grow"
             :items="categorySelectOptions"
             placeholder="Select a category"
             :disabled="selectedType === TRANSACTION_TYPE.INCOME">
@@ -32,7 +32,7 @@
         </USelect>
         <USelect
             v-model="selectedAccount"
-            class="w-xs"
+            class="w-40 grow"
             :items="accountSelectOptions"
             placeholder="Select an account">
             <template #item-leading="{ item }">

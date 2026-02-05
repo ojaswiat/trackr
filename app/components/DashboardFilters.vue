@@ -14,7 +14,7 @@
 
         <USelect
             v-model="selectedAccount"
-            class="w-xs ml-auto"
+            class="w-xs sm:ml-auto"
             :items="accountSelectOptions"
             :disabled="props.loading"
             placeholder="Select an account">

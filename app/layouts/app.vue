@@ -2,7 +2,7 @@
     <div class="w-screen">
         <UIDemoBanner
             v-if="!!user.is_demo"
-            class="fixed top-0 w-full z-9999"
+            class="w-full"
         />
 
         <div class="w-full flex">
