@@ -22,6 +22,7 @@
                     class="flex flex-col gap-1"
                     label="Date"
                     name="transaction_date"
+                    hint="MM/DD/YYYY"
                     required>
                     <UInputDate
                         ref="inputDate"
@@ -156,13 +157,14 @@
 </template>
 
 <script setup lang="ts">
+import type { CalendarDate } from "@internationalized/date";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type { z } from "zod";
-import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { cloneDeep, filter, map } from "lodash-es";
 import { storeToRefs } from "pinia";
 import { ACCOUNTS_FETCH, TRANSACTIONS_ADD, TRANSACTIONS_UPDATE } from "~~/shared/constants/api.const";
-import { CATEGORY_TYPE, TRANSACTION_TYPE } from "~~/shared/constants/enums";
+import { TRANSACTION_TYPE } from "~~/shared/constants/enums";
 import { ZAddTransactionSchema } from "~~/shared/schemas/zod.schema";
 import useTransactionActions from "~/composables/useTransactionActions";
 import useCategoryStore from "~/stores/CategoryStore";
@@ -218,8 +220,8 @@ const dateProxy = computed({
         if (!state.transaction_date) {
             return today(getLocalTimeZone());
         } else {
-            const date = new Date(state.transaction_date);
-            return new CalendarDate(date.getFullYear(), date.getMonth(), date.getDate());
+            const dateStr = state.transaction_date.split("T")[0] as string;
+            return parseDate(dateStr);
         }
     },
     set: (value: CalendarDate | undefined) => {
@@ -230,7 +232,8 @@ const dateProxy = computed({
             return;
         }
 
-        const thisDate = new Date(value.toString());
+        // Convert CalendarDate to ISO string maintaining the date
+        const thisDate = value.toDate(getLocalTimeZone());
         state.transaction_date = thisDate.toISOString();
     },
 });
