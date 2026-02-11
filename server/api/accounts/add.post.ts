@@ -37,26 +37,27 @@ export default defineEventHandler(async (event) => {
             });
         }
 
-        const newAccountInitialBalance = result.data.initial_balance ?? 0;
+        // const newAccountInitialBalance = result.data.initial_balance ?? 0;
         const newAccount = await addAccountForUser(user.id, result.data);
 
-        let transaction = {} as TTransaction;
+        // Didn't create a transaction: the initial balance as an expense may overlap all the categories.
+        // let transaction = {} as TTransaction;
 
-        if (!isEmpty(newAccount)) {
-            const thisDay = today(getLocalTimeZone());
-            const thisDate = new Date(thisDay.toString());
+        // if (!isEmpty(newAccount)) {
+        //     const thisDay = today(getLocalTimeZone());
+        //     const thisDate = new Date(thisDay.toString());
 
-            if (newAccount.initial_balance !== 0) {
-                transaction = await addTransactionForUser(user.id, {
-                    account_id: newAccount.id,
-                    category_id: newAccountInitialBalance < 0 ? await getOthersCategory() : await getIncomeCategory(),
-                    type: newAccountInitialBalance < 0 ? TRANSACTION_TYPE.EXPENSE : TRANSACTION_TYPE.INCOME,
-                    amount: Math.abs(newAccountInitialBalance),
-                    description: "Initial balance",
-                    transaction_date: thisDate.toISOString(),
-                });
-            }
-        }
+        //     if (newAccount.initial_balance !== 0) {
+        //         transaction = await addTransactionForUser(user.id, {
+        //             account_id: newAccount.id,
+        //             category_id: newAccountInitialBalance < 0 ? await getOthersCategory() : await getIncomeCategory(),
+        //             type: newAccountInitialBalance < 0 ? TRANSACTION_TYPE.EXPENSE : TRANSACTION_TYPE.INCOME,
+        //             amount: Math.abs(newAccountInitialBalance),
+        //             description: "Initial balance",
+        //             transaction_date: thisDate.toISOString(),
+        //         });
+        //     }
+        // }
 
         return {
             statusCode: SERVER_STATUS_CODES.CREATED,
@@ -64,7 +65,7 @@ export default defineEventHandler(async (event) => {
             message: "Account created successfully!",
             data: {
                 account: newAccount,
-                transaction,
+                // transaction,
             },
         };
     } catch (error) {

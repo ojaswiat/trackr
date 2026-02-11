@@ -62,7 +62,7 @@
                     placeholder="0.00"
                 />
                 <template #hint>
-                    This will create an initial transaction
+                    This will not create any transaction
                 </template>
             </UFormField>
 
