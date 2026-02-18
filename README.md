@@ -786,7 +786,7 @@ pnpm preview
 **Type errors:**
 
 - Run `pnpm typecheck` to identify issues
-- Ensure Drizzle schema matches database
+- Ensure Drizzle schema matches the database
 
 **Build errors:**
 
@@ -806,9 +806,9 @@ MIT License - See [LICENSE](LICENSE) file for details
 For issues and questions:
 
 - Check existing GitHub issues
-- Create a new issue with detailed description
+- Create a new issue with a detailed description
 - Include error logs and environment details
 
 ---
 
-**Built with by Ojaswi Athghara**
+**Ojaswi Athghara**
