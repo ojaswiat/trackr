@@ -1,0 +1,31 @@
+name: Keep Supabase Active
+
+on:
+  schedule:
+    # Run every 6 days (safer than 7) at 3:00 AM UTC
+    # Cron format: minute hour day month weekday
+    - cron: '0 3 */6 * *'
+  workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Ping health endpoint
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://trackr-murex-sigma.vercel.app/api/health)
+          echo "Health check status: $RESPONSE"
+          
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "✅ Supabase keepalive successful"
+          else
+            echo "❌ Health check failed with status: $RESPONSE"
+            exit 1
+          fi
+      
+      - name: Report status
+        if: always()
+        run: |
+          echo "Keepalive job completed at $(date)"
+          echo "Next run will be in ~6 days"
