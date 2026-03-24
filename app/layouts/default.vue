@@ -4,7 +4,7 @@
         <main class="h-[84vh]">
             <slot></slot>
         </main>
-        <UIAppFooter />
+        <UIAppFooter class="fixed bottom-0 w-full" />
     </main>
 </template>
 

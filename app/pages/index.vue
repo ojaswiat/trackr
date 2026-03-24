@@ -75,7 +75,7 @@
 
         <!-- CTA Section -->
         <section class="py-20">
-            <div class="max-w-4xl mx-auto text-center px-4">
+            <div class="max-w-4xl mx-auto text-center px-4 mb-64">
                 <h2 class="text-4xl font-bold mb-6">
                     Ready to take control of your finances?
                 </h2>
