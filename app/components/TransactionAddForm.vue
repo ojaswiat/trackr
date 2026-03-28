@@ -134,14 +134,13 @@
                 Cancel
             </UButton>
             <UButton
-                v-if="!props.transaction?.id"
                 type="submit"
                 :loading="saving && !save"
                 :disabled="(saving && save) || !!user.is_demo"
                 color="primary"
                 variant="outline"
-                icon="i-lucide:plus">
-                Add
+                :icon="props.transaction?.id ? 'i-lucide:check-check' : 'i-lucide:plus'">
+                {{ props.transaction?.id ? "Update" : "Add" }}
             </UButton>
             <UButton
                 type="submit"
@@ -210,6 +209,7 @@ const form = useTemplateRef("form");
 
 const save = ref(false);
 const saving = ref(false);
+const shouldRefreshOnClose = ref(false);
 
 const open = defineModel<boolean>("open", { default: false });
 
@@ -297,7 +297,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 });
 
                 toast.add({ title: "Success", description: "Transaction updated successfully!", color: "success" });
-                open.value = false;
+                shouldRefreshOnClose.value = true;
+
+                if (!save.value) {
+                    open.value = false;
+                }
             } catch (apiError) {
                 // Rollback on API failure by refreshing
                 toast.add({ title: "Error", description: "Failed to update. Rolling back...", color: "error" });
@@ -322,6 +326,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             applyOptimisticAdd(newTransaction);
 
             toast.add({ title: "Success", description: "Transaction added successfully!", color: "success" });
+            shouldRefreshOnClose.value = true;
 
             // reset the value
             resetForm();
@@ -341,4 +346,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         saving.value = false;
     }
 };
+
+watch(open, async (isOpen, wasOpen) => {
+    if (!isOpen && wasOpen && shouldRefreshOnClose.value) {
+        await triggerTransactionRefresh();
+        shouldRefreshOnClose.value = false;
+    }
+});
 </script>
