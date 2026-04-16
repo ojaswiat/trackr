@@ -1,6 +1,7 @@
 <template>
     <UForm
         ref="form"
+        class="transaction-add-form"
         :schema="schema"
         :state="state"
         @submit="onSubmit">
@@ -98,6 +99,7 @@
                 <UInput
                     v-model="state.amount"
                     class="w-full"
+                    fixed
                     type="number"
                     step="0.01"
                     min="0"
@@ -354,3 +356,15 @@ watch(open, async (isOpen, wasOpen) => {
     }
 });
 </script>
+
+<style scoped>
+@supports (-webkit-touch-callout: none) {
+    @media (max-width: 767px) {
+        .transaction-add-form :deep(input),
+        .transaction-add-form :deep(textarea),
+        .transaction-add-form :deep(select) {
+            font-size: 16px;
+        }
+    }
+}
+</style>
