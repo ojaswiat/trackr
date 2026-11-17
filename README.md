@@ -56,6 +56,8 @@ trackr. offers two ways to get started:
     - Google sign-in is only available to approved test users, so use GitHub if Google is not available to you
     - Your data is stored under your own account, and every request is scoped to the signed-in user (see [Is my financial data secure?](#is-my-financial-data-secure))
 
+Sign-in attempts are rate limited to **2 attempts every 5 seconds**. If you click too quickly you will see a "Too many sign-in attempts" message; wait a few seconds and try again.
+
 ### First-Time Setup
 
 After signing in for the first time:
@@ -287,6 +289,7 @@ trackr. is a portfolio project and has not been through a security review, so tr
 - Database queries are scoped to the signed-in user's ID
 - Request bodies are validated with Zod
 - The demo account is read-only, and write requests from it are rejected on the server
+- Sign-in is rate limited to 2 attempts per 5 seconds (enforced per IP on the server for demo sign-in; GitHub and Google sign-in rely on Supabase Auth's own rate limits, with a matching throttle in the browser)
 
 What it does not have: an independent security audit or automated tests. Hosting providers (for example Vercel and your database host) have their own policies, and the app includes the Vercel Analytics package. Do not rely on trackr. as the only record of your finances.
 
@@ -351,8 +354,8 @@ trackr/
 ├── server/                  # Backend application
 │   ├── api/                 # API route handlers (accounts, transactions, dashboard, categories, user, auth, health)
 │   ├── handlers/            # Business logic and database access
-│   ├── middleware/          # Auth and demo-user guards
-│   ├── utils/               # Database client and API helpers
+│   ├── middleware/          # Rate limiting, auth and demo-user guards
+│   ├── utils/               # Database client, API and rate-limit helpers
 │   └── constants/           # Server constants
 ├── shared/                  # Code shared by app and server
 │   ├── db/                  # Drizzle schema
@@ -528,6 +531,7 @@ pnpm reset:all        # Full clean and reinstall
     - 401: Unauthorized
     - 403: Forbidden (permission denied)
     - 404: Not Found
+    - 429: Too Many Requests (rate limited)
     - 500: Internal Server Error
 
 ---
@@ -536,9 +540,10 @@ pnpm reset:all        # Full clean and reinstall
 
 ### Request Pipeline
 
-1. **Auth middleware** (`server/middleware/01.auth.ts`) - For protected routes, asks Supabase for the current user and rejects the request with 401 if there is none
-2. **Demo guard** (`server/middleware/02.is-demo.ts`) - Rejects account, transaction and profile writes from the demo user with 403
-3. **Route handler** - Validates the input, calls a handler function, returns a structured response
+1. **Rate limiter** (`server/middleware/00.rate-limit.ts`) - For the auth routes in `AUTH_RATE_LIMITED_ROUTES` (currently `/api/auth/demo-signin`), allows at most 2 requests per 5 seconds per client IP and rejects the rest with 429 and a `Retry-After` header. The limits live in `APP_CONFIG.AUTH_RATE_LIMIT_MAX` and `APP_CONFIG.AUTH_RATE_LIMIT_WINDOW_MS` (`shared/constants/config.const.ts`)
+2. **Auth middleware** (`server/middleware/01.auth.ts`) - For protected routes, asks Supabase for the current user and rejects the request with 401 if there is none
+3. **Demo guard** (`server/middleware/02.is-demo.ts`) - Rejects account, transaction and profile writes from the demo user with 403
+4. **Route handler** - Validates the input, calls a handler function, returns a structured response
 
 ### 3-Layer Architecture
 
@@ -633,7 +638,7 @@ export default defineEventHandler(async (event) => {
     statusCode: number;
     statusMessage: string;
     message: string;
-    data?: any; // Validation errors, when present
+    data: any; // Validation errors, when present
 }
 ```
 
@@ -743,6 +748,7 @@ This is a personal portfolio project. Issues and suggestions are welcome.
 - **Mobile layout is still being refined**
 - **Drizzle ORM is a beta release**
 - **Google sign-in is limited to approved test users**
+- **Sign-in rate limiting is best effort** - The server-side limit only covers demo sign-in, and its counters are kept in memory per server instance, so on serverless hosting (Vercel) separate instances do not share them. GitHub and Google sign-in go directly from the browser to Supabase, so only Supabase Auth's rate limits apply there; the in-app 2-per-5-seconds throttle can be bypassed
 - **No security review has been done** - See [Is my financial data secure?](#is-my-financial-data-secure)
 
 ---
@@ -767,6 +773,7 @@ This is a personal portfolio project. Issues and suggestions are welcome.
 
 - Check `DEMO_ACCOUNT_EMAIL` and `DEMO_ACCOUNT_PASSWORD`
 - Make sure the demo user exists in Supabase Auth and its data is seeded in the database
+- A 429 "Too many sign-in attempts" error means the 2-attempts-per-5-seconds limit was hit; wait a few seconds and try again
 
 **Dashboard shows zero for the demo account:**
 

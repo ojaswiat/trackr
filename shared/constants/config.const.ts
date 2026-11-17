@@ -5,4 +5,7 @@ export const APP_CONFIG = {
     DEFAULT_CURRENCY: "GBP",
     DEFAULT_CURRENCY_SYMBOL: "£",
     DATE_RANGE_DEFAULT_MONTHS: 3,
+    // Sign-in rate limit: at most AUTH_RATE_LIMIT_MAX attempts per AUTH_RATE_LIMIT_WINDOW_MS
+    AUTH_RATE_LIMIT_MAX: 2,
+    AUTH_RATE_LIMIT_WINDOW_MS: 5000,
 } as const;

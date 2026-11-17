@@ -65,10 +65,15 @@ import { DEMO_SIGNIN } from "~~/shared/constants/api.const";
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const toast = useToast();
+const { tryAttempt } = useAuthRateLimit();
 
 const isDemoLoading = ref(false);
 
 async function signInWithGitHub() {
+    if (!tryAttempt()) {
+        return;
+    }
+
     const { error } = await supabase.auth.signInWithOAuth({
         options: {
             redirectTo: `${window.location.origin}${ROUTE_CONFIRM}`,
@@ -87,6 +92,10 @@ async function signInWithGitHub() {
 }
 
 async function signInWithGoogle() {
+    if (!tryAttempt()) {
+        return;
+    }
+
     const { error } = await supabase.auth.signInWithOAuth({
         options: {
             redirectTo: `${window.location.origin}${ROUTE_CONFIRM}`,
@@ -105,6 +114,10 @@ async function signInWithGoogle() {
 }
 
 async function signInDemoUser() {
+    if (!tryAttempt()) {
+        return;
+    }
+
     isDemoLoading.value = true;
 
     try {

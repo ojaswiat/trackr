@@ -20,6 +20,7 @@ export const SERVER_STATUS_CODES = {
     INTERNAL_SERVER_ERROR: 500,
     UNAUTHORIZED: 401,
     FORBIDDEN: 403,
+    TOO_MANY_REQUESTS: 429,
 };
 
 export type TServerStatusCode = (typeof SERVER_STATUS_CODES)[keyof typeof SERVER_STATUS_CODES];
